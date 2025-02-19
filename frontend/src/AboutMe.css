@@ -1,0 +1,60 @@
+/* Base styles for mobile and smaller screens */
+.about-content {
+  text-align: left; /* Left-align text on small screens */
+  padding: 0 20px; /* Padding on the sides */
+}
+
+.about-content h1 {
+  margin-top: 20px;
+  font-size: 66px; /* Responsive font size for mobile */
+  margin-bottom: 20px; /* Space below the h1 header */
+}
+
+.about-content .profile-picture {
+  max-width: 300px; /* Set a max width in pixels */
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Ensure image is block level */
+  margin-left: 20px;
+}
+
+.about-content ul {
+  margin-top: 10px;
+  font-size:22px;
+  margin-bottom: 10px;
+  /* Text will wrap and not expand indefinitely */
+}
+
+/* Styles for wider screens */
+@media (min-width: 768px) {
+
+  .about-content {
+    display: flex; /* Enable flexbox */
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the start (left) */
+    margin-left: 300px; /* Adjust according to your sidebar's width */
+    padding: 0px 0; /* Padding on the top and bottom */
+  }
+
+  .about-content h1 {
+    font-size: 3.75rem; /* Larger font size for wider screens */
+    margin-bottom: 10px; /* Adjust spacing as needed */
+    margin-left: 0px
+
+  }
+
+  .about-content .profile-picture {
+    width: 50%; /* Adjust image width for wider screens */
+    margin: 10px 0; /* Adjust spacing around the image */
+    margin-left: 30px
+  }
+
+  .about-content p {
+    margin-left: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    max-width: 800px; /* Limit the width of paragraphs for readability */
+    margin-left: 30px;
+    font-size: 1.25rem
+
+  }
+}

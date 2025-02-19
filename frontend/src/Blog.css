@@ -1,0 +1,73 @@
+/* Base styles for mobile and smaller screens */
+.blog-post-content {
+  margin-top: 30px; /* Space below the header */
+  padding: 0 20px; /* Padding on the sides */
+  text-align: center; /* Left-align text */
+}
+
+.markdown {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333333;
+    max-width: 800px;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+  }
+
+.blog-posts h1 {
+  font-size: 72px; /* Responsive font size for mobile */
+  margin-bottom: 30px; /* Space below the h1 header */
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 15px;
+
+}
+
+.blog-post {
+  margin-bottom: 20px; /* Space between blog posts */
+  padding-bottom: 15px; /* Padding at the bottom of each post */
+  padding-right: 20px;
+  padding-left: 20px;
+
+}
+
+.blog-post h2 {
+  font-size: 36px; /* Font size for blog post titles */
+  margin-bottom: 5px; /* Space below the title */
+}
+
+.blog-post h2 a {
+  text-decoration: none; /* Remove underline from links */
+  color: black; /* Color for the post title links */
+}
+
+.blog-post h2 a:hover {
+  text-decoration: underline;
+}
+
+.blog-post p {
+  font-size: 1rem; /* Font size for the date */
+  color: #666; /* Color for the date */
+}
+
+/* Style for narrower screens */
+@media (max-width: 768px) {
+  .blog-posts {
+    margin-left: 30px; /* Adjust according to your sidebar's width */
+    padding: 20px 0; /* Padding on the top and bottom */
+  }
+
+  .blog-posts h1 {
+    font-size: 56px; /* Larger font size for wider screens */
+
+  }
+
+  .blog-post {
+    max-width: 800px; /* Limit the width of blog posts */
+  }
+
+  .blog-post h2 {
+    font-size: 26px; /* Larger font size for blog post titles */
+  }
+}

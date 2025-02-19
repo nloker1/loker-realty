@@ -1,0 +1,120 @@
+/* General Markdown Styling */
+.markdown {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  max-width: 900px; /* Keeps content readable on large screens */
+  margin: 0 auto; /* Centers content horizontally */
+  padding: 20px;
+  text-align: left;
+}
+
+/* Responsive Headings */
+.markdown h1 {
+  font-size: 42px;
+  color: #333;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.markdown h2 {
+  font-size: 34px;
+  color: #333;
+  border-bottom: 2px solid #ccc;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.markdown h3 {
+  font-size: 28px;
+  color: #333;
+  border-bottom: 1px solid #ccc;
+}
+
+.markdown h4 {
+  font-size: 24px;
+  color: #333;
+}
+
+/* Paragraphs */
+.markdown p {
+  font-size: 22px;
+  margin-bottom: 1em;
+  text-align: justify;
+}
+
+/* Lists */
+.markdown ul, 
+.markdown ol {
+  font-size: 20px;
+  margin-left: 20px;
+}
+
+.markdown li {
+  margin-bottom: 5px;
+}
+
+/* Links */
+.markdown a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.markdown a:hover {
+  text-decoration: underline;
+}
+
+/* Images */
+.markdown img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Blockquotes */
+.markdown blockquote {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-left: 4px solid #ccc;
+  margin: 20px 0;
+  text-align: left;
+  font-style: italic;
+}
+
+/* 📱 Mobile Optimization */
+@media screen and (max-width: 768px) {
+  .markdown {
+    max-width: 95%;
+    padding: 15px;
+  }
+
+  .markdown h1 {
+    font-size: 32px;
+  }
+
+  .markdown h2 {
+    font-size: 28px;
+  }
+
+  .markdown h3 {
+    font-size: 24px;
+  }
+
+  .markdown h4 {
+    font-size: 22px;
+  }
+
+  .markdown p, 
+  .markdown ul, 
+  .markdown ol {
+    font-size: 18px;
+  }
+
+  .markdown blockquote {
+    padding: 15px;
+  }
+}

@@ -1,0 +1,96 @@
+
+.recently-sold-wrapper {
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  text-align: center;
+
+
+}
+
+.recently-sold-container {
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #faf3e0;
+  max-width: 800px;
+
+  text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+}
+
+.section-header {
+  font-size: 74px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 3px solid ; /* Blue underline */
+  display: inline-block; /* Ensures underline is as wide as the text */
+  padding-bottom: 5px; /* Adds spacing between text and underline */
+}
+
+.recently-sold-slide {
+  padding-top: 40px;
+}
+
+.homes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.home-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.home-image {
+  width: 40%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.home-address {
+  font-size: 28px;
+  margin: 10px 0;
+  color: #444;
+}
+
+.home-price {
+  font-size: 28px;
+  color: #555;
+}
+
+
+@media (max-width: 768px) {
+
+.section-header {
+  font-size: 52px;
+}
+
+.recently-sold-slide {
+  padding-top: 20px;
+}
+
+.home-image {
+  width: 65%;
+}
+
+.home-address {
+  font-size: 22px;
+  margin: 10px 0;
+  color: #444;
+}
+
+.home-price {
+  font-size: 22px;
+  color: #555;
+}
+
+
+
+}

@@ -1,0 +1,144 @@
+/* 📌 General Container Styling */
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+/* 📌 Heading & Paragraph Styles */
+.contact-container h1 {
+  font-size: 68px;
+  margin-top: 30px;
+  margin-left: 30px;
+  border-bottom: 2px solid black;
+  line-height: 1.2;
+}
+
+.contact-container p {
+  margin-top: 40px;
+  font-size: 36px;
+}
+
+/* 📌 Form Styling */
+.contact-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  padding: 0 20px;
+  width: 90%;
+  max-width: 800px;
+}
+
+/* 📌 Form Group (Labels & Input Fields) */
+.form-group {
+  width: 100%;
+  text-align: left;
+  font-size: 34px;
+  font-family: 'Lora', serif;
+  font-weight: bold;
+  padding-left: 20px;
+}
+
+/* 📌 Form Fields */
+form input,
+form textarea {
+  margin: 10px 0;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 22px;
+}
+
+/* 📌 Textarea Specific Styles */
+.message-textarea {
+  height: 150px;
+}
+
+/* 📌 Submit Button Styling */
+form button {
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  font-size: 32px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 20px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  width: 98%;
+}
+
+form button:hover {
+  background-color: grey;
+}
+
+/* 📌 Contact Details Section */
+.contact-details {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+/* 📌 Contact Items (Phone & Email) */
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 32px;
+  color: black;
+}
+
+/* 📌 Icons */
+.contact-item .icon {
+  font-size: 32px;
+  color: black;
+}
+
+/* 📌 Contact Links */
+.contact-item a {
+  text-decoration: none;
+  color: black;
+  font-size: 32px;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  border-bottom: 1px solid black;
+}
+
+.contact-item a:hover {
+  color: grey;
+}
+
+/* 📌 📱 Responsive Styling (Mobile Screens) */
+@media (max-width: 768px) {
+  .contact-container h1 {
+    font-size: 52px;
+  }
+
+  .contact-container form {
+    max-width: 400px;
+  }
+
+  form button {
+    font-size: 26px;
+  }
+
+  .contact-details {
+    gap: 20px;
+    flex-direction: column;
+  }
+
+  .contact-item {
+    font-size: 22px;
+  }
+
+  .contact-item a {
+    font-size: 22px;
+  }
+}

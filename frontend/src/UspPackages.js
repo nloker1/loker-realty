@@ -1,0 +1,72 @@
+// UspPackages.js
+import React from "react";
+import "./UspPackages.css"; // Import the CSS file
+
+const UspPackages = () => {
+  return (
+    <div className="pricing-section"> {/* White background container */}
+      <h1>Choose Your Listing Package:</h1>
+
+      {/* New Wrapper to keep pricing boxes side-by-side */}
+      <div className="pricing-wrapper">
+        {/* Base Package Box */}
+        <div className="pricing-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Package</th>
+              <th>Full Service (1.5%)</th>
+              <th>Premium (2.5%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Best for Sellers Who...</strong></td>
+              <td>Want full-service marketing & the best price—without staging.</td>
+              <td>Want expert staging & a premium selling experience.</td>
+            </tr>
+            <tr>
+              <td><strong>Pricing</strong></td>
+              <td> 1.5% of total sales price</td>
+              <td> 2.5% of total sales price</td>
+            </tr>
+            <tr>
+              <td><strong>Professional Photography & Videography</strong></td>
+              <td> ✔️</td>
+              <td> ✔️</td>
+            </tr>
+            <tr>
+              <td><strong>Maximum Exposure on Zillow, Redfin and More</strong></td>
+              <td> ✔️</td>
+              <td> ✔️</td>
+            </tr>
+            <tr>
+              <td><strong>Cancel Anytime Guarantee</strong></td>
+              <td> ✔️</td>
+              <td> ✔️</td>
+            </tr>
+            <tr>
+              <td><strong>Strategic Home Prep</strong></td>
+              <td> ❌</td>
+              <td> ✔️</td>
+            </tr>
+            <tr>
+              <td><strong>Professional Staging</strong></td>
+              <td> ❌</td>
+              <td> Free Staging Consultation</td>
+            </tr>
+
+            <tr>
+              <td><strong>Personalized Marketing Touches</strong></td>
+              <td> ❌</td>
+              <td> Open Houses, Fylers, etc</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+    </div>
+  );
+};
+
+export default UspPackages;

@@ -1,0 +1,44 @@
+.App-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; /* Center all content in the header */
+  padding: 20px;
+  transition: width 0.3s ease-in-out;
+  border-bottom: 1px solid #ccc;
+  font-size: 32px;
+  font-weight: bold;
+  background-color: #f8f9fa;
+}
+
+.App-header nav ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; /* Center the list items within the ul */
+}
+
+.App-header nav ul li {
+  margin: 0 10px; /* Adds spacing between list items */
+}
+
+.App-header nav ul li a {
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #35434a;
+}
+
+.App-header nav ul li a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+
+  .App-header nav ul li a{
+    font-size:26px;
+  }
+
+}

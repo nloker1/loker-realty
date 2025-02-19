@@ -1,0 +1,93 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lora', serif;
+}
+
+
+.usp {
+    flex-direction: column; /* Stack the elements vertically */
+    align-items: center; /* Center the content */
+    text-align: center; /* Center text */
+    padding-right: 150px;
+    padding-left: 150px;  
+    background: #fcfaf7;
+    padding-bottom: 50px;
+}
+
+.content-wrapper {
+    max-width: 1300px; /* Prevents the content from expanding too wide */
+    width: 100%;       /* Ensures the container adjusts for smaller screens */
+    margin: 0 auto;    /* Centers the container horizontally */
+    padding: 0 20px;   /* Adds padding to ensure content doesn't touch screen edges */
+
+}
+
+.usp h1 {
+    font-size: 74px;
+    justify-content: center;
+    margin-bottom: 50px;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 17px;
+    padding-top: 60px;
+}
+
+.usp h2 {
+    font-size: 42px;
+    text-align: left;
+    width: 75%;
+    margin-left: 100px;
+    margin-bottom: 5px;
+}
+
+.usp p {
+    font-size: 26px;
+    text-align: left;
+    margin-left: 160px;
+    margin-bottom: 10px;
+
+
+}
+
+.usp h3 {
+
+    font-size: 52px;
+    text-align: center;
+    margin-left: 100px;
+    margin-bottom: 20px;
+    margin-top: 40px;
+
+}
+
+@media (max-width: 768px) {
+    .usp {
+        padding-right: 40px; /* Reduce padding for smaller screens */
+        padding-left: 40px;
+    }
+
+    .usp h1 {
+        font-size: 52px; /* Adjust font size */
+        padding-top: 40px;
+    }
+
+    .usp h2 {
+        font-size: 32px; /* Adjust font size */
+        text-align: center; /* Center-align for small screens */
+        margin-left: 0; /* Remove left margin */
+        width: 100%; /* Make width responsive */
+    }
+
+    .usp p {
+        font-size: 26px; /* Adjust font size */
+        text-align: center; /* Center-align for small screens */
+        margin-left: 0; /* Remove left margin */
+    }
+
+    .usp h3 {
+        font-size: 36px; /* Adjust font size */
+        margin-left: 0; /* Remove left margin */
+        margin-top: 40px;
+    }
+}

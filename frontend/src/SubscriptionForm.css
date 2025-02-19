@@ -1,0 +1,90 @@
+.subscription-container {
+    padding: 40px;
+    display: grid;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    background: #f8f9fa;
+    align-items: center;
+    justify-content: center;
+    padding:20px;
+}
+
+.subscription-container h1 {
+    font-size:52px;
+    text-align: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid black;
+    line-height: 1.2;
+}
+
+.subscription-container h2 {
+    font-size:32px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.subscription-form {
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    margin-top: 0px;
+
+}
+
+.email-input  {
+    font-size: 26px;
+    border: 2px solid #dddddd;
+    border-radius: 4px;
+    text-align:center;
+    margin-bottom: 15px;
+}
+
+.submit-button {
+
+    font-size: 32px;
+    color: white;
+    background-color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 0px;
+    width: 100%;
+}
+
+.submit-button:hover {
+    background-color: grey;
+}
+
+.email-input.error {
+    border: 2px solid #ff0000; /* Red border for error */
+}
+
+.success-message {
+    font-size: 22px;
+    margin-top: 5px;
+    text-align:center   ;
+}
+
+.already-subscribed {
+    font-size: 22px;
+    margin-top: 5px;
+}
+
+.error-message {
+    color: #ff0000; /* Red text for error message */
+    font-size: 22px;
+    margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+
+.subscription-container h1 {
+    font-size:30px;
+}
+.subscription-container h2 {
+    font-size:24px;
+}
+}
+
+
