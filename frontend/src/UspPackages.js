@@ -15,8 +15,8 @@ const UspPackages = () => {
           <thead>
             <tr>
               <th>Package</th>
-              <th>Full Service (1.5%)</th>
-              <th>Premium (2.5%)</th>
+              <th>Full Service (1.7%)</th>
+              <th>Premium (2.7%)</th>
             </tr>
           </thead>
           <tbody>
@@ -27,8 +27,8 @@ const UspPackages = () => {
             </tr>
             <tr>
               <td><strong>Pricing</strong></td>
-              <td> 1.5% of total sales price</td>
-              <td> 2.5% of total sales price</td>
+              <td> 1.7% of total sales price</td>
+              <td> 2.7% of total sales price</td>
             </tr>
             <tr>
               <td><strong>Professional Photography & Videography</strong></td>
@@ -54,12 +54,6 @@ const UspPackages = () => {
               <td><strong>Professional Staging</strong></td>
               <td> ❌</td>
               <td> Free Staging Consultation</td>
-            </tr>
-
-            <tr>
-              <td><strong>Personalized Marketing Touches</strong></td>
-              <td> ❌</td>
-              <td> Open Houses, Fylers, etc</td>
             </tr>
           </tbody>
         </table>
