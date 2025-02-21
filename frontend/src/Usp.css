@@ -70,6 +70,7 @@
     .usp h1 {
         font-size: 52px; /* Adjust font size */
         padding-top: 40px;
+        text-underline-offset: 12px;
     }
 
     .usp h2 {

@@ -36,7 +36,7 @@
 .toggle-buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 60px;
   margin-bottom: 60px;
 }
 
@@ -70,7 +70,10 @@
 
 .toggle-container h2 {
   font-size: 66px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 17px;
 }
 
 /* Recently Sold */
@@ -83,6 +86,7 @@
   height: auto;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .home-address {
@@ -95,6 +99,7 @@
   font-size: 28px;
   color: #555;
   margin-top: 5px;
+  margin-bottom: 15px;
 }
 
 /* Testimonials */
@@ -150,8 +155,36 @@
     font-size: 52px;
   }
 
+  .toggle-container h2 {
+    font-size: 46px;
+    margin-bottom: 40px;
+  }
+
+.toggle-buttons {
+  display: flex;
+
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.toggle-buttons button {
+  padding: 8px 8px;
+  font-size: 22px;
+  border: 2px solid black;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
   .sold-section, .testimonials-section {
     padding: 15px;
+  }
+
+  .home-image {
+    margin-bottom: 20px;
   }
 
   .home-address {
@@ -160,6 +193,7 @@
 
   .home-price {
     font-size: 18px;
+    margin-bottom: 10px;
   }
 
   .testimonial-slide p {
