@@ -158,11 +158,13 @@
   .toggle-container h2 {
     font-size: 46px;
     margin-bottom: 40px;
+    text-underline-offset: 12px;
+
   }
 
 .toggle-buttons {
   display: flex;
-
+  margin-top: 20px;
   justify-content: center;
   gap: 30px;
   margin-bottom: 30px;
@@ -188,13 +190,17 @@
   }
 
   .home-address {
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .home-price {
-    font-size: 18px;
+    font-size: 22px;
     margin-bottom: 10px;
   }
+
+  .testimonial-slide h3 {
+  font-size: 26px;
+}
 
   .testimonial-slide p {
     font-size: 25px;

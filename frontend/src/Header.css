@@ -37,6 +37,10 @@
 
 @media (max-width: 768px) {
 
+  .App-header nav ul li {
+    margin: 0 5px; /* Adds spacing between list items */
+    }
+
   .App-header nav ul li a{
     font-size:26px;
   }
