@@ -27,8 +27,8 @@ const UspPackages = () => {
             </tr>
             <tr>
               <td><strong>Pricing</strong></td>
-              <td> 1.5% of total sales price</td>
-              <td> 2.5% of total sales price</td>
+              <td> 2% of total sales price</td>
+              <td> 3% of total sales price</td>
             </tr>
             <tr>
               <td><strong>Professional Photography & Videography</strong></td>
