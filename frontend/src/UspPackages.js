@@ -15,8 +15,8 @@ const UspPackages = () => {
           <thead>
             <tr>
               <th>Package</th>
-              <th>Full Service (1.5%)</th>
-              <th>Premium (2.5%)</th>
+              <th>Full Service (2%)</th>
+              <th>Premium (3%)</th>
             </tr>
           </thead>
           <tbody>
