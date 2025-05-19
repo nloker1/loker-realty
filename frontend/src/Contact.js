@@ -81,7 +81,7 @@ const Contact = () => {
         <div className="contact-details">
           <div className="contact-item">
             <FaPhoneAlt className="icon" />
-            <a href="tel:+15412418998">(541) 241-8998</a>
+            <a href="tel:+15412418998">(541) 399-7756</a>
           </div>
           <div className="contact-item">
             <FaEnvelope className="icon" />
