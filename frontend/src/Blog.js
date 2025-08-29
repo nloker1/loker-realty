@@ -8,11 +8,6 @@ const Blog = () => {
   // Example blog posts data
   const blogPosts = [
 
-    {
-      id:5,
-      title: "How I saved my first client over $10,000 in Commission Fees!",
-      date: "May 19, 2025"
-    },
 
     {
       id:4,
