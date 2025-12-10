@@ -11,7 +11,7 @@ Fully designed, coded, and hosted by me to power my independent real estate brok
 ### Mobile Homepage
 ![Mobile View](screenshots/mobile-homepage.png)
 
-### 🚀 Why I Built This
+###  Why I Built This
 After years as a data engineer at HelloSign/Dropbox, I pivoted to real estate brokerage. I needed a professional site that stood out in the Columbia Gorge market – clean design, fast loading, SEO-optimized for local searches, and easy to update with new listings.
 
 This project combines my backend skills (Node.js APIs) with front-end design and Linux server management. It's not just a portfolio piece – it's a real business tool generating leads.
