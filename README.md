@@ -6,8 +6,6 @@ Fully designed, coded, and hosted by me to power my independent real estate brok
 <!-- Screenshots – Replace with your own (desktop + mobile) -->
 ### Homepage
 ![Homepage](screenshots/homepage.png) <!-- Add actual paths or URLs -->
-### Listing + Testimonial Toggle
-![Listings Page](screenshots/listing-toggle.png)
 ### Mobile Homepage
 ![Mobile View](screenshots/mobile-homepage.png)
 
@@ -28,6 +26,7 @@ This project combines my backend skills (Node.js APIs) with front-end design and
 
 ### 📐 Architecture Overview
 Simple, performant setup:
+
 ![App architecture](screenshots/app-architecture.png)
 
 
