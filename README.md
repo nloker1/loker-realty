@@ -28,6 +28,7 @@ This project combines my backend skills (Node.js APIs) with front-end design and
 
 ### 📐 Architecture Overview
 Simple, performant setup:
+![App architecture](screenshots/app-architecture.png)
 
 
 ### 🎯 Key Features & Challenges Solved
