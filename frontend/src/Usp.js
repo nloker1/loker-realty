@@ -11,7 +11,7 @@ const Usp = () => {
         <p>
         Unlike agents tied to big brokerages, I am affiliated with Real Broker—a hands-off agency  
         that allows me greater independence. This enables me to provide you with  
-        <strong>honest, unbiased</strong> advice. My <strong>fair pricing model</strong>  
+        <strong> honest, unbiased</strong> advice. My <strong>fair pricing model </strong>  
         helps keep more of your hard-earned equity in your pocket.  
         </p>
         <h2>2. Professional Marketing:</h2>
