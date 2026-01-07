@@ -25,8 +25,17 @@ const PropertyMap = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch('http://localhost:8000/api/listings')
+// Need to switch to vite env variables eventually. Currently a short cut
+useEffect(() => {
+    // Check if the current window URL contains 'localhost'
+    const isLocal = window.location.hostname === 'localhost';
+    
+    // If local, use the full path. If production, use the relative path.
+    const apiUrl = isLocal 
+        ? 'http://localhost:8000/api/listings' 
+        : '/api/listings';
+
+    fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
         setListings(data);
@@ -36,7 +45,7 @@ const PropertyMap = () => {
         console.error('Error fetching listings:', error);
         setLoading(false);
       });
-  }, []);
+}, []);
 
   if (loading) return <div className="map-loading">Loading Properties...</div>;
 
