@@ -9,8 +9,18 @@ const HomeDetails = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Fetching from your existing FastAPI endpoint
-        fetch(`http://localhost:8000/api/listings/${mls_number}`)
+        // 1. Detect environment
+        const isLocal = window.location.hostname === 'localhost';
+        
+        // 2. Set the base URL
+        const apiBase = isLocal 
+            ? 'http://localhost:8000/api/listings' 
+            : '/api/listings';
+
+        setLoading(true);
+
+        // 3. Fetch using the dynamic base + the MLS number
+        fetch(`${apiBase}/${mls_number}`)
             .then(res => {
                 if (!res.ok) throw new Error("Listing not found");
                 return res.json();
