@@ -9,6 +9,7 @@ const Header = () => {
         <ul>
           <li><Link to="/">Home</Link></li>
           <li><Link to="/blog">Education</Link></li>
+          <li><Link to="/map">Map Search</Link></li> {/* Uncommented and renamed */}
           <li><Link to="/contact">Contact</Link></li>
           {/* other links */}
         </ul>

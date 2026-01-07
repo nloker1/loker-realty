@@ -1,0 +1,186 @@
+/* --- 1. LAYOUT & FULL-SCREEN CONTAINERS --- */
+
+/* Root container in App.js */
+.map-page-container {
+    height: calc(100vh - 80px); /* Adjust 80px to match your Header height */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Wrapper in PropertyMap.js */
+.map-wrapper {
+    flex-grow: 1;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.dev-disclaimer {
+    position: fixed;   /* Fixes it to the screen, not the map */
+    top: 20;
+    left: 0;
+    right: 0;
+    height: 50px;      /* Give it a set height */
+    
+    background-color: #fef08a;
+    border-bottom: 2px solid #eab308;
+    color: #854d0e;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* This is the magic number. Leaflet uses z-indexes up to 1000. 
+       We go higher to stay on top of everything. */
+    z-index: 9999; 
+    
+    pointer-events: none; /* Allows clicks to 'pass through' to the map if needed */
+}
+
+.dev-disclaimer p {
+    margin: 0;
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.warning-icon {
+    font-size: 1.2rem;
+}
+
+
+/* Actual Leaflet Map Instance */
+.leaflet-container {
+    height: 100% !important;
+    width: 100%;
+    z-index: 1;
+}
+
+/* Loading State */
+.map-loading {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    color: #006aff;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+/* --- 2. PRICE PILLS (ZILLOW STYLE) --- */
+
+.custom-price-marker {
+    background: blue;
+    border: 1.5px solid #006aff;
+    color: white;
+    font-weight: 800;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+    transition: transform 0.1s ease-in-out, background 0.2s;
+}
+
+.custom-price-marker:hover {
+    background: #006aff;
+    color: white;
+    transform: scale(1.1);
+    z-index: 1000 !important;
+}
+
+/* --- 3. POPUP UI RECONSTRUCTION --- */
+
+/* Container Fixes */
+.leaflet-popup-content-wrapper { padding: 0 !important; overflow: hidden; border-radius: 8px; }
+.leaflet-popup-content { margin: 0 !important; width: 300px !important; }
+
+.popup-card {
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Image & Logo Overlay */
+.popup-image-container {
+    position: relative;
+    height: 128px; /* Matches h-32 */
+    width: 100%;
+}
+
+.popup-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.popup-logo-badge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 2px;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.popup-logo-badge img {
+    height: 16px;
+    display: block;
+    opacity: 0.9;
+}
+
+/* Text Content */
+.popup-info {
+    padding: 12px;
+    background: white;
+}
+
+.popup-price-tag {
+    color: #1e3a8a; /* Blue-900 */
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-bottom: 2px;
+}
+
+.popup-address-text {
+    color: #1f2937; /* Gray-800 */
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 0 0 8px 0 !important;
+    line-height: 1.2;
+}
+
+.popup-broker-text {
+    font-size: 10px;
+    color: #9ca3af;
+    margin: 0 0 12px 0 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Button */
+.popup-action-btn {
+    width: 100%;
+    background-color: #2563eb; /* Blue-600 */
+    color: white !important;
+    font-weight: 700;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background 0.2s;
+}
+
+.popup-action-btn:hover {
+    background-color: #1d4ed8;
+}

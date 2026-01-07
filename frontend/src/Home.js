@@ -3,7 +3,6 @@ import Header from './Header';
 import Footer from './Footer';
 import Usp from './Usp';
 import UspPackages from "./UspPackages"; 
-
 import SoldTestimonialToggle from './SoldTestimonialToggle';
 
 import Popup from './Popup'; // Import the pop-up component
