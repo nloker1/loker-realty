@@ -1,78 +1,394 @@
-.details-page { background: #f8fafc; min-height: 100vh; color: #1e293b; line-height: 1.5; }
-.details-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-.details-nav { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 16px 0; position: sticky; top: 0; z-index: 50; }
-.back-link { color: #2563eb; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
 
-.details-header { display: flex; justify-content: space-between; align-items: flex-end; padding: 32px 0; }
-.details-header h1 { font-size: 2.25rem; font-weight: 800; margin: 0; color: #0f172a; }
-.sub-address { font-size: 1.25rem; color: #64748b; margin: 4px 0 0 0; }
-.price-text { font-size: 2.5rem; font-weight: 800; color: #1e3a8a; margin: 0; text-align: right; }
-.mls-label { color: #94a3b8; font-size: 0.875rem; text-align: right; margin: 0; }
-
-.details-layout-grid { display: grid; grid-template-columns: 1fr 350px; gap: 32px; padding-bottom: 60px; }
-
-/* Gallery Styles */
-.hero-viewport { height: 500px; border-radius: 12px; overflow: hidden; background: #cbd5e1; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-.hero-viewport img { width: 100%; height: 100%; object-fit: cover; }
-
-.thumb-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 12px; }
-.thumb-item { height: 80px; border-radius: 8px; overflow: hidden; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
-.thumb-item.active { border-color: #2563eb; }
-.thumb-item img { width: 100%; height: 100%; object-fit: cover; }
-
-/* Content Cards */
-.info-card { background: #fff; padding: 32px; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 24px; }
-.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; }
-.stat strong { display: block; font-size: 1.5rem; color: #0f172a; }
-.stat span { font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 600; }
-
-.remarks-text { white-space: pre-line; color: #475569; }
-
-/* Sidebar */
-.contact-card { background: #1e3a8a; color: #fff; padding: 32px; border-radius: 12px; position: sticky; top: 100px; }
-.primary-btn { width: 100%; padding: 16px; background: #fff; color: #1e3a8a; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 24px; transition: 0.2s; }
-.primary-btn:hover { background: #f1f5f9; }
-.broker-line { margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; opacity: 0.8; }
-
-.compliance-footer {
-    max-width: 1200px; margin: 0 auto; padding: 0 24px;
-    padding-top: 32px;
-    border-top: 1px solid #e2e8f0;
-    padding-bottom: 60px;
+/* --- GLOBAL RESET --- */
+.details-page {
+    background-color: white; /* Zillow uses white, not gray */
+    color: #2a2a33;
+    font-family: 'Open Sans', 'Adjusted Arial', Tahoma, Geneva, sans-serif;
 }
 
-.compliance-content {
+.details-container {
+    max-width: 1100px; /* Slightly tighter width like Zillow */
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #006aff; /* Zillow Blue */
+    font-weight: 600;
+    font-size: 1.5rem; /* Increased size (was default) */
+    display: inline-flex;
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+/* Forces the color to stay blue even if visited */
+.back-link:visited, .back-link:hover, .back-link:active {
+    color: #006aff;
+}
+
+.back-link:hover {
+    text-decoration: underline; /* Nice UX touch */
+}
+
+.gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent black */
+    color: white;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 16px 12px;
+    cursor: pointer;
+    z-index: 10; /* Ensure it sits on top of image */
+    transition: background-color 0.2s;
+    user-select: none;
+}
+
+.gallery-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.7); /* Darker on hover */
+}
+
+.gallery-arrow.left {
+    left: 0;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.gallery-arrow.right {
+    right: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+/* --- PRICE & STATUS ROW --- */
+.listing-header {
+    margin-bottom: 24px;
+}
+
+.price-status-row {
     display: flex;
-    flex-direction: row;
+    align-items: center; /* Vertically aligns price and badge */
+    gap: 12px; /* Space between Price and Badge */
+    margin-bottom: 4px;
+}
+
+.price-main {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0;
+    color: #2a2a33;
+    line-height: 1; /* Tighter line height helps alignment */
+}
+
+/* Enhanced Status Badge */
+.status-badge {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* Default styling */
+    background: white;
+    border: 1px solid #d1d1d5;
+    color: #2a2a33;
+    /* Prevent badge from shrinking if price is long */
+    flex-shrink: 0; 
+}
+
+/* Optional: Color code status */
+.status-badge.active {
+    border-color: #28a745;
+    color: #28a745;
+    background: #e8f5e9;
+}
+
+.status-badge.pending {
+    border-color: #ffc107;
+    color: #856404;
+    background: #fff3cd;
+}
+
+/* --- MEDIA SECTION (Top main image) --- */
+.media-section {
+    background: #fff;
+    padding-bottom: 16px;
+
+
+}
+
+.main-media-container {
+    width: 100%;
+    /* Mobile first: use a 16:9 widescreen ratio */
+    aspect-ratio: 16 / 9;
+    background: #f0f2f5; /* Light gray placeholder color */
+    padding-right: 16px;
+    padding-left: 16px;
+    overflow: hidden;
+    position: relative;
+}
+
+.main-hero-img {
+    width: 100%;
+    height: 100%;
+    /* 'cover' fills the space, cropping edges if necessary. Looks premium. */
+    /* Change to 'contain' if you want to see the whole photo with black/gray bars */
+    object-fit: cover; 
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* --- THUMBNAIL GALLERY FIX --- */
+.thumb-scroll-container {
+    margin-top: 12px;
+    /* Ensure thumbs don't spill out of the main container width */
+    width: 100%;
+    overflow: hidden;
+}
+
+.thumb-bar {
+    display: flex;
+    gap: 10px; /* Space between thumbs */
+    overflow-x: auto; /* Allow side-to-side scrolling */
+    padding-bottom: 8px; /* Space for scrollbar */
+    scroll-behavior: smooth;
+    /* Hide ugly scrollbars on Firefox/IE */
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+
+/* Hide ugly scrollbars on Chrome/Safari */
+.thumb-bar::-webkit-scrollbar { 
+    display: none; 
+}
+
+.thumb-item {
+    /* Fixed size for thumbs so they are uniform */
+    width: 100px;
+    height: 75px;
+    /* CRITICAL: prevents thumbs from squishing to fit the screen */
+    flex-shrink: 0; 
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.thumb-item:hover {
+    opacity: 1;
+}
+
+/* Highlight the currently selected image */
+.thumb-item.active {
+    opacity: 1;
+    border-color: #006aff; /* Zillow blue highlight */
+}
+
+.thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure thumbnail fills its box */
+}
+
+/* --- DESKTOP MEDIA OVERRIDES (900px+) --- */
+@media (min-width: 900px) {
+    .main-media-container {
+        /* On big screens, fix the height instead of using aspect ratio */
+        aspect-ratio: auto; 
+        height: 550px;
+        /* Optional: round corners on desktop for a card look */
+        /* border-radius: 8px; */
+        /* margin-top: 16px; */
+    }
+
+    /* Make thumbs slightly bigger on desktop */
+    .thumb-item {
+        width: 120px;
+        height: 90px;
+    }
+}
+
+/* --- LAYOUT GRID (The Magic Part) --- */
+.zillow-layout-grid {
+    display: flex;
+    flex-direction: column; /* Mobile first */
     gap: 24px;
-    align-items: flex-start;
+    margin-top: 24px;
 }
 
-.compliance-logo {
-    height: 50px;
-    width: auto;
-    opacity: 0.8;
+/* --- LEFT COLUMN CONTENT --- */
+.listing-header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0;
+    color: #2a2a33;
 }
 
-.compliance-text {
-    font-size: 0.75rem; /* Standard legal "small print" size */
-    color: #64748b;
-    line-height: 1.6;
+.status-badge {
+    margin-left: 12px;
+    font-size: 14px;
+    vertical-align: middle;
+    background: white;
+    border: 1px solid #d1d1d5;
+    color: #2a2a33;
+    padding: 2px 8px;
+    border-radius: 4px;
 }
 
-.compliance-text p {
+.header-address h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #596b82; /* Blue-ish gray */
+    margin: 4px 0 0 0;
+}
+
+.stats-bar {
+    display: flex;
+    align-items: center;
+    margin: 16px 0;
+    font-size: 18px;
+}
+
+.stat-item strong {
+    font-weight: 700;
+    margin-right: 4px;
+}
+
+.stat-divider {
+    margin: 0 12px;
+    color: #d1d1d5;
+}
+
+.divider {
+    height: 1px;
+    background-color: #d1d1d5;
+    margin: 24px 0;
+}
+
+.section-block h3 {
+    font-size: 20px;
     margin-bottom: 12px;
 }
 
-.last-updated {
-    font-family: monospace;
-    color: #94a3b8;
+.remarks-text {
+    line-height: 1.6;
+    color: #444;
 }
 
-/* Mobile responsive fix */
-@media (max-width: 768px) {
-    .compliance-content {
-        flex-direction: column;
+.facts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.fact-row {
+    background: #f9f9fb;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* --- RIGHT COLUMN (Sticky Card) --- */
+.sticky-contact-card {
+    background: white;
+    border: 1px solid #d1d1d5;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card-header h3 {
+    margin-top: 0;
+    color: #006aff; /* Zillow Blue */
+}
+
+.primary-btn {
+    width: 100%;
+    background-color: #006aff;
+    color: white;
+    font-weight: 700;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.primary-btn:hover {
+    background-color: #0056cf;
+}
+
+.secondary-btn {
+    width: 100%;
+    background-color: white;
+    color: #006aff;
+    border: 1px solid #006aff;
+    padding: 12px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.agent-info {
+    margin-top: 24px;
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+}
+
+.broker-name {
+    font-weight: 700;
+    color: #333;
+    margin: 4px 0;
+}
+
+/* --- INLINE COMPLIANCE FOOTER --- */
+.compliance-footer-inline {
+    margin-top: 40px;
+    background: #f9f9fb;
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.compliance-logo-small {
+    width: 40px;
+    height: auto;
+}
+
+.compliance-tiny {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* --- DESKTOP BREAKPOINT --- */
+@media (min-width: 900px) {
+    .zillow-layout-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr; /* 2/3 Content, 1/3 Sidebar */
+        align-items: start; /* Vital for sticky to work */
+    }
+
+    /* THE STICKY MAGIC */
+    .sticky-contact-card {
+        position: sticky;
+        top: 24px; /* Stays 24px from top of window while scrolling */
+    }
+
+    .media-container {
+        height: 500px; /* Taller photos on desktop */
     }
 }

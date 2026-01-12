@@ -1,14 +1,13 @@
 .App-header {
+  position: relative;        /* 1. Added: Establishes a boundary for the absolute text */
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center; /* Center all content in the header */
+  justify-content: center;   /* 2. Keeps the NAV centered */
   padding: 20px;
-  transition: width 0.3s ease-in-out;
   border-bottom: 1px solid #ccc;
-  font-size: 32px;
-  font-weight: bold;
   background-color: #f8f9fa;
+  /* Removed: transition and font styles (moved font styles to links/text for better control) */
 }
 
 .App-header nav ul {
@@ -16,33 +15,77 @@
   margin: 0;
   list-style: none;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: center; /* Center the list items within the ul */
 }
 
 .App-header nav ul li {
-  margin: 0 10px; /* Adds spacing between list items */
+  margin: 0 10px;
 }
 
 .App-header nav ul li a {
   padding: 5px 10px;
   text-decoration: none;
   color: #35434a;
+  font-size: 32px; /* Moved font size here for better control */
+  font-weight: bold;
 }
 
 .App-header nav ul li a:hover {
   text-decoration: underline;
 }
 
+/* The container that holds both Logo and Text */
+.brokerage-info {
+  position: absolute;      /* Removes it from the center flow */
+  right: 20px;             /* Pins it to the far right */
+  top: 50%;                /* Moves top edge to the middle */
+  transform: translateY(-50%); /* Pulls it back up by 50% of its own height to perfectly center it vertically */
+  display: flex;
+  flex-direction: column;  /* Stacks logo on top of text */
+  align-items: center;     /* Centers logo and text relative to each other */
+}
+
+/* The Logo Image */
+.brokerage-info img {
+  height: 30px;            /* adjust based on your preference */
+  width: auto;
+  
+}
+
+/* The Text */
+.brokerage-text {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;         /* Smaller font since it is stacked */
+  white-space: nowrap;
+}
+/* Mobile Adjustments */
 @media (max-width: 768px) {
-
   .App-header nav ul li {
-    margin: 0 5px; /* Adds spacing between list items */
-    }
-
-  .App-header nav ul li a{
-    font-size:26px;
+    margin: 0 5px;
+  }
+  
+  .App-header nav ul li a {
+    font-size: 16px;
   }
 
+    .brokerage-info {
+    position: absolute;      /* Removes it from the center flow */
+    right: 1px;             /* Pins it to the far right */
+
+  }
+
+  /* The Logo Image */
+  .brokerage-info img {
+    height: 15px;            /* adjust based on your preference */
+    width: auto;
+    
+  }
+  
+  /* On very small screens, you might need to move the text so it doesn't overlap the nav */
+  .brokerage-text {
+    font-size: 7px;       /* Make it smaller on mobile */
+    right: 10px;           /* Move it slightly closer to edge */
+    top: 5px;              /* Optional: Move it to the top corner if it overlaps links */
+  }
 }

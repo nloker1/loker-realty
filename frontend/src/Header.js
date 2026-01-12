@@ -8,13 +8,16 @@ const Header = () => {
       <nav>
         <ul>
           <li><Link to="/">Home</Link></li>
-          <li><Link to="/blog">Education</Link></li>
-          <li><Link to="/map">Map Search</Link></li> {/* Uncommented and renamed */}
+          <li><Link to="/map">Map Search</Link></li>
           <li><Link to="/contact">Contact</Link></li>
-          {/* other links */}
         </ul>
       </nav>
-      {/* Any other header content */}
+      
+      {/* Container for the Stacked Logo + Text */}
+      <div className="brokerage-info">
+        <img src="/real-logo.png" alt="Real Broker Logo" />
+        <span className="brokerage-text">Real Broker, LLC</span>
+      </div>
     </header>
   );
 }

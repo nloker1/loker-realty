@@ -1,186 +1,218 @@
-/* --- 1. LAYOUT & FULL-SCREEN CONTAINERS --- */
+/* =========================================
+   1. GLOBAL MAP LAYOUT
+   ========================================= */
 
-/* Root container in App.js */
-.map-page-container {
-    height: calc(100vh - 80px); /* Adjust 80px to match your Header height */
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+.map-wrapper {
+  height: calc(100dvh - 80px); 
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
 }
 
-/* Wrapper in PropertyMap.js */
-.map-wrapper {
-    flex-grow: 1;
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+.leaflet-container {
+  height: 100% !important;
+  width: 100%;
+  z-index: 1;
+}
+
+.map-loading {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #006aff;
+  font-weight: 600;
 }
 
 .dev-disclaimer {
-    position: fixed;   /* Fixes it to the screen, not the map */
-    top: 20;
-    left: 0;
-    right: 0;
-    height: 50px;      /* Give it a set height */
-    
-    background-color: #fef08a;
-    border-bottom: 2px solid #eab308;
-    color: #854d0e;
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    /* This is the magic number. Leaflet uses z-indexes up to 1000. 
-       We go higher to stay on top of everything. */
-    z-index: 9999; 
-    
-    pointer-events: none; /* Allows clicks to 'pass through' to the map if needed */
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 36px;
+  background-color: rgba(254, 240, 138, 0.95);
+  border-bottom: 1px solid #eab308;
+  color: #854d0e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-size: 0.75rem;
+  pointer-events: none;
 }
 
-.dev-disclaimer p {
-    margin: 0;
-    font-weight: 500;
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-}
-
-.warning-icon {
-    font-size: 1.2rem;
-}
-
-
-/* Actual Leaflet Map Instance */
-.leaflet-container {
-    height: 100% !important;
-    width: 100%;
-    z-index: 1;
-}
-
-/* Loading State */
-.map-loading {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f8f9fa;
-    color: #006aff;
-    font-weight: 600;
-    font-size: 1.2rem;
-}
-
-/* --- 2. PRICE PILLS (ZILLOW STYLE) --- */
+/* =========================================
+   2. MAP MARKERS (PRICE PILLS)
+   ========================================= */
 
 .custom-price-marker {
-    background: blue;
-    border: 1.5px solid #006aff;
-    color: white;
-    font-weight: 800;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
-    transition: transform 0.1s ease-in-out, background 0.2s;
+  background: #006aff;
+  border: 1px solid white;
+  color: white;
+  font-weight: 700;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
 }
 
 .custom-price-marker:hover {
-    background: #006aff;
-    color: white;
-    transform: scale(1.1);
-    z-index: 1000 !important;
+  transform: scale(1.1);
+  z-index: 999;
 }
 
-/* --- 3. POPUP UI RECONSTRUCTION --- */
+.custom-price-marker.selected {
+  background: #222;
+  border: 2px solid white;
+  transform: scale(1.15);
+  z-index: 1000 !important;
+}
 
-/* Container Fixes */
-.leaflet-popup-content-wrapper { padding: 0 !important; overflow: hidden; border-radius: 8px; }
-.leaflet-popup-content { margin: 0 !important; width: 300px !important; }
+/* =========================================
+   3. PROPERTY CARD CONTAINER (Logic Split)
+   ========================================= */
 
-.popup-card {
+/* A. SHARED BASE STYLES (Applies to ALL screens) */
+.property-card-container {
+  background: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  z-index: 99999 !important; 
+  display: flex;
+  overflow: hidden;
+  position: fixed !important; 
+}
+
+/* --- MOVED LOGO BASE STYLES HERE --- */
+/* Placing this BEFORE the media queries ensures overrides work */
+.rmls-logo-overlay {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    z-index: 10;
+    width: auto;     /* Natural width */
+    height: 20px;    /* Base height (Desktop default) */
+}
+
+/* B. MOBILE LAYOUT (Bottom Sheet) - Screens < 768px */
+@media (max-width: 767px) {
+  .property-card-container {
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
+    height: 120px;
+    border-radius: 12px;
+    flex-direction: row;
+    top: auto !important; 
+    transform: none !important; 
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Mobile Inner Layout */
+  .card-image-wrapper { width: 38%; }
+  
+  /* THIS WILL NOW WORK (Because it comes AFTER the base style above) */
+  .rmls-logo-overlay {
+        bottom: 4px;
+        right: 4px;
+        height: 16px; 
+    }
+    
+  .card-content {
+    width: 62%;
+    padding: 10px 12px;
     display: flex;
     flex-direction: column;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    justify-content: center;
+  }
+  .card-price { font-size: 18px; font-weight: 800; color: #1a1a1a; line-height: 1.1; }
+  .card-stats { font-size: 12px; color: #666; margin-bottom: 4px; }
+  .card-address { font-size: 12px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; }
+  .card-broker { display: none; }
 }
 
-/* Image & Logo Overlay */
-.popup-image-container {
-    position: relative;
-    height: 128px; /* Matches h-32 */
+/* C. DESKTOP LAYOUT (Center Pop-up) - Screens >= 768px */
+@media (min-width: 768px) {
+  .property-card-container {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 8px;
+    flex-direction: column; 
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -48%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+  }
+
+  .card-image-wrapper { width: 100%; height: 200px; }
+  .card-content { padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; }
+  .card-price { font-size: 24px; font-weight: 700; color: #333; }
+  .card-stats { font-size: 14px; color: #555; }
+  .card-address { font-size: 15px; color: #333; font-weight: 500; }
+  .card-broker { font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 12px; }
 }
 
-.popup-img {
+/* =========================================
+   4. CARD INNER ELEMENTS (Buttons & Badges)
+   ========================================= */
+
+.close-card-btn {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 24px; height: 24px;
+  font-size: 18px; line-height: 1;
+  cursor: pointer;
+  color: #555;
+  z-index: 10;
+}
+
+.card-image-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-image-wrapper .main-property-photo {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
 }
 
-.popup-logo-badge {
-    position: absolute;
-    bottom: 4px;
-    right: 4px;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 2px;
-    border-radius: 2px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+/* Note: .rmls-logo-overlay was removed from here and moved up to Section 3A */
+
+.card-badge {
+  position: absolute;
+  bottom: 6px; left: 6px;
+  background: #28a745;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
-.popup-logo-badge img {
-    height: 16px;
-    display: block;
-    opacity: 0.9;
-}
-
-/* Text Content */
-.popup-info {
-    padding: 12px;
-    background: white;
-}
-
-.popup-price-tag {
-    color: #1e3a8a; /* Blue-900 */
-    font-weight: 700;
-    font-size: 1.125rem;
-    margin-bottom: 2px;
-}
-
-.popup-address-text {
-    color: #1f2937; /* Gray-800 */
-    font-weight: 700;
-    font-size: 1rem;
-    margin: 0 0 8px 0 !important;
-    line-height: 1.2;
-}
-
-.popup-broker-text {
-    font-size: 10px;
-    color: #9ca3af;
-    margin: 0 0 12px 0 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Button */
-.popup-action-btn {
-    width: 100%;
-    background-color: #2563eb; /* Blue-600 */
-    color: white !important;
-    font-weight: 700;
-    padding: 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    text-transform: uppercase;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: background 0.2s;
-}
-
-.popup-action-btn:hover {
-    background-color: #1d4ed8;
+.view-details-btn {
+  background: #006aff;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: auto;
 }
