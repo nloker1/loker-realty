@@ -19,8 +19,7 @@ function App() {
           <Route path="/map" element={<PropertyMapPage />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog-posts/:id" element={<BlogPost />} /> {/* Route for individual blog posts */}
-          <Route path="/listing/:mls_number" element={<HomeDetails />} />
-          {/* other routes */}
+          <Route path="/property/:slug/:mls_number" element={<HomeDetails />} />          {/* other routes */}
         </Routes>
       </div>
     </Router>

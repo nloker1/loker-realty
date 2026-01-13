@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './PropertyMap.css';
+import { createSlug } from './utils/slugify'; // <--- Import it here
 
 // --- HELPER: Handles clicks on empty map ---
 function MapEvents({ clearSelection }) {
@@ -219,7 +220,11 @@ const PropertyMap = () => {
                 <p className="card-broker">{selectedListing.listing_brokerage}</p>
                 <button 
                     className="view-details-btn"
-                    onClick={() => navigate(`/listing/${selectedListing.mls_number}`)}
+                    onClick={() => {
+                        // Use 'selectedListing' because that is what holds the data for the open card
+                        const slug = createSlug(selectedListing.address, selectedListing.city, selectedListing.zipcode);
+                        navigate(`/property/${slug}/${selectedListing.mls_number}`);
+                    }}
                 >
                     View Details
                 </button>
