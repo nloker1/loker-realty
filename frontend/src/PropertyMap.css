@@ -27,17 +27,102 @@
 
 .dev-disclaimer {
   position: absolute;
-  top: 0; left: 0; right: 0;
+  bottom: 0;          /* 1. Anchor to the bottom */
+  top: auto;          /* 2. Release the top anchor (crucial!) */
+  left: 0; right: 0;
+  
   height: 36px;
   background-color: rgba(254, 240, 138, 0.95);
-  border-bottom: 1px solid #eab308;
+  
+  border-top: 1px solid #eab308;    /* 3. Move border to the top edge */
+  border-bottom: none;              /* 4. Remove the bottom border */
+  
   color: #854d0e;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  
+  /* Keep z-index lower than your search bar (5000) and card (99999) */
+  z-index: 1000; 
+  
   font-size: 0.75rem;
-  pointer-events: none;
+  pointer-events: none; /* Allows clicks to pass through to the map attribution */
+}
+
+/* --- ZILLOW STYLE SEARCH BAR --- */
+.search-container {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    z-index: 5000; /* Above Map */
+    width: 90%;
+    max-width: 400px;
+    font-family: 'Open Sans', sans-serif; /* Clean font */
+}
+
+/* The "Pill" Shape */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 50px; /* Full rounded corners */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15); /* Soft, high-end shadow */
+    padding: 5px 20px;
+    height: 50px;
+    transition: all 0.2s ease;
+}
+
+/* Input Field */
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    background: transparent;
+    margin-left: 10px;
+}
+
+/* The Search Icon (Mag Glass) */
+.search-icon {
+    font-size: 20px;
+    color: #006aff; /* Zillow Blue */
+    cursor: pointer;
+}
+
+/* --- DROPDOWN SUGGESTIONS --- */
+.search-suggestions {
+    margin-top: 8px;
+    background: white;
+    border-radius: 12px; /* Slightly less rounded than the bar */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    list-style: none;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto; /* Scroll if too many results */
+}
+
+.suggestion-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    font-size: 14px;
+    color: #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.suggestion-item:hover {
+    background-color: #f7f9fc; /* Light blue hover */
+    color: #006aff;
+}
+
+.suggestion-price {
+    font-weight: bold;
+    color: #333;
 }
 
 /* =========================================
@@ -113,6 +198,10 @@
     from { transform: translateY(100%); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
   }
+
+  .search-bar-container {
+        top: 15px;
+    }
 
   /* Mobile Inner Layout */
   .card-image-wrapper { width: 38%; }

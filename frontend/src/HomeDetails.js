@@ -21,7 +21,12 @@ const HomeDetails = () => {
                 return res.json();
             })
             .then(data => {
+                // 1. FILTER: Remove images where is_private is true
+                if (data.images) {
+                    data.images = data.images.filter(img => !img.is_private);
+                }
                 setListing(data);
+                // 2. Set Main Image (safely using the filtered list)
                 setMainImage(data.images?.[0]?.url || data.photo_url);
                 setLoading(false);
             })
@@ -57,7 +62,7 @@ const HomeDetails = () => {
         <div className="details-page">
             <nav className="details-nav">
                 <div className="details-container">
-                    <Link to="/map" className="back-link">← Back to Search Map</Link>
+                    <Link to="/map" className="back-link">← Back to Map</Link>
                 </div>
             </nav>
 
@@ -114,10 +119,13 @@ const HomeDetails = () => {
                                     {listing.internal_status || 'Active'}
                                 </span>
                             </div>
-                            <div className="header-address">
-                                <h2>{listing.address}</h2>
-                                <p>{listing.city}, OR</p>
-                            </div>
+                        <div className="header-address">
+                            <h2>
+                                {listing.is_address_exposed 
+                                    ? listing.address 
+                                    : 'Undisclosed Address'}
+                            </h2>
+                        </div>
                         </div>
 
                         {/* Stats Bar */}
@@ -150,6 +158,20 @@ const HomeDetails = () => {
                             </div>
                         </div>
 
+                        <div className="divider"></div>
+
+                        <div className="listing-attribution">
+                            <div className="agent-info">
+                                <p className="small-text">Listed by: {listing.list_agent_name}: {listing.attribution_contact}, {listing.listing_brokerage} </p>
+                            <div className="source-row">
+                                <span className="small-text">Source: RMLS™</span>
+                                <img src="/rmls_logo.jpg" alt="RMLS Logo" className="compliance-logo-source" /> 
+                            </div>
+                            </div>
+                        </div>
+
+
+
                         {/* --- RESTORED COMPLIANCE FOOTER --- */}
                         <footer className="compliance-footer-inline">
                             <img src="/rmls_logo.jpg" alt="RMLS Logo" className="compliance-logo-small" /> 
@@ -159,8 +181,6 @@ const HomeDetails = () => {
                                     IDX program of the RMLS™ of Portland, Oregon. Real estate listings held by brokerage 
                                     firms other than Real Broker, LLC are marked with the RMLS™ logo, 
                                     and detailed information about these properties includes the names of the listing brokers.
-                                </p>
-                                <p className="compliance-tiny">
                                     Listing content is copyright © 2026 RMLS™, Portland, Oregon. 
                                     IDX content is updated approximately every two hours. Some properties which appear 
                                     for sale on this web site may subsequently have sold or may no longer be available. 
@@ -184,30 +204,18 @@ const HomeDetails = () => {
                             </div>
                             
                             <div className="contact-form">
-                                <button className="primary-btn" onClick={() => window.location.href = "tel:+15415550123"}>
+                                <button className="primary-btn" onClick={() => window.location.href = "tel:+15413997756"}>
                                     Schedule Viewing
                                 </button>
-                                <button className="secondary-btn">Ask a Question</button>
+                                <button className="secondary-btn">Contact Agent</button>
                             </div>
 
-                            <div className="agent-info">
-                                <p className="small-text">Listing Courtesy of:</p>
-                                <p className="broker-name">{listing.listing_brokerage}</p>
-                                <p className="small-text">Source: RMLS™</p>
-                            </div>
+ 
                         </div>
                     </aside>
 
                 </div>
             </main>
-
-            {/* Mobile Footer */}
-            <div className="mobile-sticky-action">
-                <div className="mobile-price">{priceFormatted}</div>
-                <button className="mobile-contact-btn" onClick={() => window.location.href = "tel:+15415550123"}>
-                    Contact Agent
-                </button>
-            </div>
         </div>
     );
 };

@@ -5,7 +5,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './PropertyMap.css';
 
-// --- HELPER: Handles clicks on the empty map background ---
+// --- HELPER: Handles clicks on empty map ---
 function MapEvents({ clearSelection }) {
   const map = useMap();
   useEffect(() => {
@@ -15,19 +15,90 @@ function MapEvents({ clearSelection }) {
   return null;
 }
 
-// --- HELPER: Creates the "Price Pill" Marker Icon ---
+// --- HELPER: Creates Price Pill Icon ---
 const createPriceIcon = (price, isSelected) => {
     const formattedPrice = price >= 1000000 
       ? `$${(price / 1000000).toFixed(1)}M` 
       : `$${Math.round(price / 1000)}k`;
-   
+    
     return L.divIcon({
-      // Adds 'selected' class if clicked (turns black)
       className: `custom-price-marker ${isSelected ? 'selected' : ''}`, 
       html: `<span>${formattedPrice}</span>`,
       iconSize: [60, 26],
       iconAnchor: [30, 13], 
     });
+};
+
+// --- NEW COMPONENT: Zillow-Style Search Bar ---
+// We pass 'map' into this so it can control movement directly
+const SearchBar = ({ listings, onSelectListing }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+    const map = useMap(); // Access the map instance
+
+    // Filter listings as user types
+    const handleInputChange = (e) => {
+        const term = e.target.value;
+        setSearchTerm(term);
+
+        if (term.length > 0) {
+            const matches = listings.filter(property => 
+                (property.address && property.address.toLowerCase().includes(term.toLowerCase())) ||
+                (property.mls_number && property.mls_number.toString().includes(term)) ||
+                (property.city && property.city.toLowerCase().includes(term.toLowerCase()))
+            );
+            setSuggestions(matches.slice(0, 5)); // Limit to top 5 results
+        } else {
+            setSuggestions([]);
+        }
+    };
+
+    // When user clicks a suggestion
+    const handleSelect = (property) => {
+        setSearchTerm('');   // Clear input
+        setSuggestions([]);  // Clear dropdown
+        onSelectListing(property); // Open the card
+
+        // SMOOTH FLY-TO ANIMATION
+        map.flyTo([property.lat, property.lon], 16, {
+            animate: true,
+            duration: 1.5 // Slower, smoother glide
+        });
+    };
+
+    return (
+        <div className="search-container">
+            <div className="search-box">
+                {/* Search Icon (using text for simplicity, can be SVG) */}
+                <span className="search-icon">🔍</span>
+                <input 
+                    type="text" 
+                    className="search-input" 
+                    placeholder="Address, City, Zip, or MLS..." 
+                    value={searchTerm}
+                    onChange={handleInputChange}
+                />
+            </div>
+
+            {/* Dropdown Suggestions */}
+            {suggestions.length > 0 && (
+                <ul className="search-suggestions">
+                    {suggestions.map(property => (
+                        <li 
+                            key={property.mls_number} 
+                            className="suggestion-item"
+                            onClick={() => handleSelect(property)}
+                        >
+                            <span>{property.address}, {property.city}</span>
+                            <span className="suggestion-price">
+                                {property.price ? `$${(property.price/1000).toFixed(0)}k` : ''}
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
 };
 
 const PropertyMap = () => {
@@ -37,7 +108,6 @@ const PropertyMap = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Environment detection
     const isLocal = window.location.hostname === 'localhost';
     const apiUrl = isLocal ? 'http://localhost:8000/api/listings' : '/api/listings';
 
@@ -58,7 +128,7 @@ const PropertyMap = () => {
   return (
     <div className="map-wrapper">
       
-      {/* Dev Disclaimer (Optional - remove when live) */}
+      {/* Dev Disclaimer */}
       <div className="dev-disclaimer">
          <span className="warning-icon">⚠️</span>
          <p><strong>DEV MODE:</strong> TEST DATA ONLY.</p>
@@ -69,17 +139,28 @@ const PropertyMap = () => {
         zoom={12} 
         scrollWheelZoom={true}
         className="leaflet-container"
-        zoomControl={false} // We hide default zoom to avoid UI clutter on mobile
+        zoomControl={false}
       >
         <TileLayer
           attribution='&copy; OpenStreetMap'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Clicking the map background closes the active card */}
         <MapEvents clearSelection={() => setSelectedListing(null)} />
+        
+        {/* --- PLACE SEARCH BAR INSIDE MAPCONTAINER --- */}
+        {/* Why inside? Because it needs access to 'useMap()' hook to flyTo() */}
+        <SearchBar 
+            listings={listings} 
+            onSelectListing={setSelectedListing} 
+        />
 
-        {listings.map((property) => {
+        {listings
+            /* 1. INSERT FILTER HERE */
+            .filter(property => property.lat && property.lon)
+            
+            /* 2. Then map over what is left */
+            .map((property) => {
             const isSelected = selectedListing?.mls_number === property.mls_number;
             
             return (
@@ -87,10 +168,9 @@ const PropertyMap = () => {
                 key={property.mls_number} 
                 position={[property.lat, property.lon]}
                 icon={createPriceIcon(property.price, isSelected)}
-                zIndexOffset={isSelected ? 1000 : 0} // Selected pin always on top
+                zIndexOffset={isSelected ? 1000 : 0}
                 eventHandlers={{
                     click: (e) => {
-                        // Stop click from hitting the map background
                         L.DomEvent.stopPropagation(e.originalEvent);
                         setSelectedListing(property);
                     }
@@ -101,24 +181,19 @@ const PropertyMap = () => {
       </MapContainer>
 
       {/* --- RESPONSIVE PROPERTY CARD --- */}
-      {/* CSS determines if this is a "Bottom Sheet" (Mobile) or "Side Panel" (Desktop) */}
       {selectedListing && (
         <div className="property-card-container">
             <button className="close-card-btn" onClick={() => setSelectedListing(null)}>×</button>
             
           <div className="card-image-wrapper">
-              {/* 1. ADD THE CLASS HERE */}
               <img 
-                  className="main-property-photo"  /* <-- Add this class */
+                  className="main-property-photo" 
                   src={selectedListing.photo_url} 
+                  alt={selectedListing.address}
               />
-
-              {/* 2. Status Badge (Unchanged) */}
               <span className="card-badge">
                   {selectedListing.internal_status || 'Active'}
               </span>
-
-              {/* 3. RMLS Logo (Unchanged) */}
               <img 
                   src="/rmls_logo.jpg" 
                   alt="RMLS" 
@@ -127,27 +202,21 @@ const PropertyMap = () => {
           </div>
             <div className="card-content">
                 <div className="card-header-row">
-                    {/* SAFE GUARD: Check if price exists before formatting */}
                     <div className="card-price">
                         {selectedListing.price 
                             ? `$${selectedListing.price.toLocaleString()}` 
                             : 'Price Upon Request'}
                     </div>
                 </div>
-                
                 <div className="card-stats">
-                    {/* SAFE GUARDS: specific checks for missing data */}
                     {selectedListing.beds || 0} bds | 
                     {' '}{selectedListing.baths || 0} ba | 
                     {' '}{selectedListing.sqft ? selectedListing.sqft.toLocaleString() : '—'} sqft
                 </div>
-                
                 <div className="card-address">
-                    {selectedListing.address}, {selectedListing.city}
+                    {selectedListing.address}
                 </div>
-                
                 <p className="card-broker">{selectedListing.listing_brokerage}</p>
-                
                 <button 
                     className="view-details-btn"
                     onClick={() => navigate(`/listing/${selectedListing.mls_number}`)}
