@@ -8,6 +8,8 @@ const HomeDetails = () => {
     const [mainImage, setMainImage] = useState('');
     const [loading, setLoading] = useState(true);
 
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
     // --- FETCH LOGIC ---
     useEffect(() => {
         const isLocal = window.location.hostname === 'localhost';
@@ -36,6 +38,20 @@ const HomeDetails = () => {
             });
     }, [mls_number]);
 
+    // --- KEYBOARD SUPPORT (Escape to Close, Arrows to Navigate) ---
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (!isLightboxOpen) return;
+            
+            if (e.key === 'Escape') setIsLightboxOpen(false);
+            if (e.key === 'ArrowRight') handleNext(e);
+            if (e.key === 'ArrowLeft') handlePrev(e);
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isLightboxOpen, listing, mainImage]); // Dependencies ensure state is fresh
+
     // --- GALLERY LOGIC ---
     const handleNext = (e) => {
         e.stopPropagation();
@@ -60,15 +76,59 @@ const HomeDetails = () => {
 
     return (
         <div className="details-page">
+            {/* --- LIGHTBOX OVERLAY --- */}
+            {isLightboxOpen && (
+                <div className="lightbox-overlay" onClick={() => setIsLightboxOpen(false)}>
+                    
+                    {/* Close Button (Fixed to top right of screen) */}
+                    <button className="lightbox-close-fixed" onClick={() => setIsLightboxOpen(false)}>
+                        Close ×
+                    </button>
+
+                    {/* Scrollable Container */}
+                    <div className="lightbox-scroll-container" onClick={(e) => e.stopPropagation()}>
+                        {listing.images && listing.images.map((img, index) => (
+                            <div key={index} className="lightbox-image-wrapper">
+                                <img 
+                                    src={img.url} 
+                                    className="lightbox-feed-img" 
+                                    alt={`Gallery ${index + 1}`} 
+                                    loading="lazy" /* Good for performance! */
+                                />
+                                {/* Optional: Add a photo count overlay like "1 of 25" */}
+                                <span className="image-counter-overlay">{index + 1} / {listing.images.length}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
             <nav className="details-nav">
-                <div className="details-container">
+                {/* Added 'details-nav-flex' class to handle the layout */}
+                <div className="details-container details-nav-flex">
+                    
                     <Link to="/map" className="back-link">← Back to Map</Link>
+                    
+                    {/* RIGHT SIDE: Branding Group */}
+                    <div className="nav-branding">
+                        <img src="/real-logo.png" alt="Real Broker Logo" className="nav-logo" />
+                        <span className="brokerage-text">Real Broker, LLC</span>
+                    </div>
+                    
                 </div>
             </nav>
 
             {/* --- MEDIA SECTION --- */}
             <div className="media-section">
                 <div className="main-media-container">
+
+                    {/* Add onClick here to trigger lightbox */}
+                    <img 
+                        src={mainImage || listing.photo_url} 
+                        alt="Property Main" 
+                        className="main-hero-img" 
+                        onClick={() => setIsLightboxOpen(true)} // <--- TRIGGER
+                        style={{ cursor: 'zoom-in' }} // UX Hint
+                    />
                     
                     {/* Left Arrow */}
                     {listing.images?.length > 1 && (
