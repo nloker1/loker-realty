@@ -3,28 +3,27 @@
    ========================================= */
 
 .map-wrapper {
-  height: calc(100dvh - 80px); 
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  background: #e5e7eb;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    height: 100vh;          /* Force full viewport height */
+    width: 100vw;
+    overflow: hidden;       /* No double scrollbars */
+}
+
+.map-header-container {
+    flex: 0 0 auto;       /* Do not shrink or grow */
+    position: relative;   /* Establish stacking context */
+    z-index: 2000;        /* CRITICAL: Must be > 1000 (Leaflet's max) */
+    background: white;    /* Ensure map doesn't show through */
 }
 
 .leaflet-container {
-  height: 100% !important;
-  width: 100%;
-  z-index: 1;
+    flex: 1;              /* Grow to fill all remaining space */
+    width: 100%;
+    z-index: 1;           /* Keep it below the header */
 }
 
-.map-loading {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #006aff;
-  font-weight: 600;
-}
-
+/* 4. Optional: Fix the Disclaimer Style if needed */
 .dev-disclaimer {
   position: absolute;
   bottom: 0;          /* 1. Anchor to the bottom */
@@ -48,6 +47,17 @@
   font-size: 0.75rem;
   pointer-events: none; /* Allows clicks to pass through to the map attribution */
 }
+
+.map-loading {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #006aff;
+  font-weight: 600;
+}
+
+
 
 /* --- ZILLOW STYLE SEARCH BAR --- */
 .search-container {

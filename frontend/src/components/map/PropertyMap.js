@@ -130,13 +130,15 @@ const PropertyMap = () => {
 
   return (
     <div className="map-wrapper">
-      <Header /> 
-      
+        <div className="map-header-container">
+          <Header />
+        </div>
+
       {/* Dev Disclaimer */}
-      <div className="dev-disclaimer">
-         <span className="warning-icon">⚠️</span>
-         <p><strong>DEV MODE:</strong> TEST DATA ONLY.</p>
-      </div>
+        <div className="dev-disclaimer">
+             <span className="warning-icon">⚠️</span>
+             <p><strong>DEV MODE:</strong> TEST DATA ONLY.</p>
+        </div>
 
       <MapContainer 
         center={[43.3665, -124.2179]} 
