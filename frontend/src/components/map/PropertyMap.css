@@ -91,6 +91,7 @@
     cursor: pointer;
 }
 
+
 /* --- DROPDOWN SUGGESTIONS --- */
 .search-suggestions {
     margin-top: 8px;
@@ -123,6 +124,130 @@
 .suggestion-price {
     font-weight: bold;
     color: #333;
+}
+
+/* --- CONTROL BAR CONTAINER --- */
+.map-controls-container {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000; /* Above Leaflet map */
+    
+    width: 90%;
+    max-width: 600px;
+    
+    display: flex;
+    flex-direction: column; /* Stack vertically by default (Mobile first) */
+    gap: 8px;
+}
+
+/* --- SEARCH BOX ROW --- */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    margin-left: 10px;
+    width: 100%;
+}
+
+/* --- FILTER ROW --- */
+.filter-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto; /* Allow horizontal scroll on tiny screens */
+    padding-bottom: 2px; /* For scrollbar breathing room */
+}
+
+/* --- THE DROPDOWNS --- */
+.map-filter {
+    appearance: none; /* Removes default browser arrow */
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+    white-space: nowrap;
+    
+    /* Adds a custom tiny arrow indicator */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 8px;
+    padding-right: 25px; /* Space for the arrow */
+}
+
+/* --- SAVE BUTTON (Tiny Version) --- */
+.save-search-btn-small {
+    background-color: #006aff; /* Zillow Blue */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,106,255,0.3);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* --- SEARCH SUGGESTIONS (Dropdown) --- */
+.search-suggestions {
+    position: absolute;
+    top: 55px; /* Below search bar */
+    left: 0;
+    right: 0;
+    background: white;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    overflow: hidden;
+}
+
+.suggestion-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 14px;
+}
+.suggestion-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* --- DESKTOP TWEAKS --- */
+@media (min-width: 768px) {
+    .map-controls-container {
+        flex-direction: row; /* Side by side on Desktop */
+        max-width: 800px;
+        align-items: center;
+    }
+    
+    .search-box {
+        flex: 2; /* Search bar takes 2x space */
+    }
+    
+    .filter-row {
+        flex: 3; /* Filters take 3x space */
+        justify-content: flex-start;
+    }
 }
 
 /* =========================================

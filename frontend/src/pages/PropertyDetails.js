@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import './HomeDetails.css';
+import './PropertyDetails.css';
 
-const HomeDetails = () => {
+const PropertyDetails = () => {
     const { mls_number } = useParams();
     const [listing, setListing] = useState(null);
     const [mainImage, setMainImage] = useState('');
@@ -280,4 +280,4 @@ const HomeDetails = () => {
     );
 };
 
-export default HomeDetails;
+export default PropertyDetails;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw'; // ✅ Import rehypeRaw to allow raw HTML
-import './markdown.css';
+import '../markdown.css';
 
 const BlogPost = () => {
   const { id } = useParams();

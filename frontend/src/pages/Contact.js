@@ -1,9 +1,10 @@
 // Contact.js
 import React, { useState, useCallback } from 'react';
 import { FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 import './Contact.css';
-import Header from './Header';
-import Footer from './Footer';
+
 
 
 const Contact = () => {

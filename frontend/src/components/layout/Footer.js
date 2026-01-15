@@ -1,5 +1,5 @@
 import React from 'react';
-import SubscriptionForm from './SubscriptionForm'
+import SubscriptionForm from '../shared/SubscriptionForm'
 import './Footer.css'; 
 
 
