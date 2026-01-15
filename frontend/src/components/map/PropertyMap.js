@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './PropertyMap.css';
+import Header from '../../components/layout/Header';
 import { createSlug } from '../../utils/slugify'; // <--- Import it here
+
 
 // --- HELPER: Handles clicks on empty map ---
 function MapEvents({ clearSelection }) {
@@ -128,6 +130,7 @@ const PropertyMap = () => {
 
   return (
     <div className="map-wrapper">
+      <Header /> 
       
       {/* Dev Disclaimer */}
       <div className="dev-disclaimer">
