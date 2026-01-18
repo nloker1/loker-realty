@@ -23,30 +23,6 @@
     z-index: 1;           /* Keep it below the header */
 }
 
-/* 4. Optional: Fix the Disclaimer Style if needed */
-.dev-disclaimer {
-  position: absolute;
-  bottom: 0;          /* 1. Anchor to the bottom */
-  top: auto;          /* 2. Release the top anchor (crucial!) */
-  left: 0; right: 0;
-  
-  height: 36px;
-  background-color: rgba(254, 240, 138, 0.95);
-  
-  border-top: 1px solid #eab308;    /* 3. Move border to the top edge */
-  border-bottom: none;              /* 4. Remove the bottom border */
-  
-  color: #854d0e;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
-  /* Keep z-index lower than your search bar (5000) and card (99999) */
-  z-index: 1000; 
-  
-  font-size: 0.75rem;
-  pointer-events: none; /* Allows clicks to pass through to the map attribution */
-}
 
 .map-loading {
   height: 100vh;

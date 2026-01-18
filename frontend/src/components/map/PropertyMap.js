@@ -134,14 +134,8 @@ const PropertyMap = () => {
           <Header />
         </div>
 
-      {/* Dev Disclaimer */}
-        <div className="dev-disclaimer">
-             <span className="warning-icon">⚠️</span>
-             <p><strong>DEV MODE:</strong> TEST DATA ONLY.</p>
-        </div>
-
       <MapContainer 
-        center={[43.3665, -124.2179]} 
+        center={[45.7276, -121.4865]} // <--- White Salmon, WA
         zoom={12} 
         scrollWheelZoom={true}
         className="leaflet-container"
