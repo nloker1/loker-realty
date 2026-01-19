@@ -192,7 +192,7 @@ const PropertyMap = () => {
                   alt={selectedListing.address}
               />
               <span className="card-badge">
-                  {selectedListing.internal_status || 'Active'}
+                  {selectedListing.status || 'Active'}
               </span>
               <img 
                   src="/rmls_logo.jpg" 
