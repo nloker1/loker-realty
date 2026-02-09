@@ -1,0 +1,61 @@
+.zillow-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background-color: white;
+    border-bottom: 1px solid #d1d5db; /* Light gray border */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle shadow */
+    z-index: 500; /* Above the map */
+    position: relative;
+    flex-wrap: wrap; /* Good for mobile */
+}
+
+/* Common Input Styles */
+.z-input, .z-select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.z-input:focus, .z-select:focus {
+    border-color: #006aff; /* Zillow Blue */
+}
+
+/* Specific Sizes */
+.search-group {
+    flex-grow: 1; /* Takes available space */
+}
+.search-input {
+    width: 100%;
+    min-width: 200px;
+}
+
+.price-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.price-input {
+    width: 90px;
+}
+.dash {
+    color: #888;
+}
+
+/* The Button */
+.z-button {
+    background-color: #006aff;
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.z-button:hover {
+    background-color: #0056b3;
+}

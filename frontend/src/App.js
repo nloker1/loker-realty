@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 // Pages
 import Home from './pages/Home';
 import Contact from './pages/Contact';
+import Dashboard from './pages/MarketDashboard';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import PropertyDetails from './pages/PropertyDetails';
@@ -21,6 +22,8 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/map" element={<PropertyMap />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog-posts/:id" element={<BlogPost />} /> {/* Route for individual blog posts */}
           <Route path="/property/:slug/:mls_number" element={<PropertyDetails />} />          {/* other routes */}

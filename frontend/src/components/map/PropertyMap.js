@@ -1,14 +1,26 @@
+// ==========================================
+// 1. IMPORTS
+// ==========================================
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './PropertyMap.css';
+
+// ARCHITECTURE NOTE: You are importing FilterBar here, but NOT using it below.
+// You are currently using the old 'SearchBar' defined inside this file instead.
+import FilterBar from '../../components/map/FilterBar'; 
 import Header from '../../components/layout/Header';
-import { createSlug } from '../../utils/slugify'; // <--- Import it here
+import { createSlug } from '../../utils/slugify';
 
 
-// --- HELPER: Handles clicks on empty map ---
+// ==========================================
+// 2. HELPER: MAP EVENTS
+// ==========================================
+// This invisible component sits inside the map. 
+// When you click empty space (grass/water), it triggers 'clearSelection' 
+// to close the popup card.
 function MapEvents({ clearSelection }) {
   const map = useMap();
   useEffect(() => {
@@ -18,7 +30,12 @@ function MapEvents({ clearSelection }) {
   return null;
 }
 
-// --- HELPER: Creates Price Pill Icon ---
+// ==========================================
+// 3. HELPER: CUSTOM MARKER ICONS
+// ==========================================
+// This creates the little HTML "Pills" showing the price ($500k).
+// CRITICAL MISSING PIECE: This version doesn't handle Status Colors yet. 
+// It only checks 'isSelected' (Green) or default (Blue).
 const createPriceIcon = (price, isSelected) => {
     const formattedPrice = price >= 1000000 
       ? `$${(price / 1000000).toFixed(1)}M` 
@@ -32,47 +49,51 @@ const createPriceIcon = (price, isSelected) => {
     });
 };
 
-// --- NEW COMPONENT: Zillow-Style Search Bar ---
-// We pass 'map' into this so it can control movement directly
+// ==========================================
+// 4. THE OLD SEARCH BAR (CLIENT-SIDE)
+// ==========================================
+// ⚠️ PROBLEM AREA: This component creates the search bar inside the map.
+// It filters the 'listings' array using Javascript (.filter).
+// This restricts you to ONLY searching what is already downloaded.
+// It cannot see "Sold" listings because they aren't downloaded by default.
 const SearchBar = ({ listings, onSelectListing }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState([]);
-    const map = useMap(); // Access the map instance
+    const map = useMap(); // Allows this bar to fly the map around
 
-    // Filter listings as user types
     const handleInputChange = (e) => {
         const term = e.target.value;
         setSearchTerm(term);
 
+        // This filters the LOCAL data in memory.
         if (term.length > 0) {
             const matches = listings.filter(property => 
                 (property.address && property.address.toLowerCase().includes(term.toLowerCase())) ||
                 (property.mls_number && property.mls_number.toString().includes(term)) ||
                 (property.city && property.city.toLowerCase().includes(term.toLowerCase()))
             );
-            setSuggestions(matches.slice(0, 5)); // Limit to top 5 results
+            setSuggestions(matches.slice(0, 5));
         } else {
             setSuggestions([]);
         }
     };
 
-    // When user clicks a suggestion
     const handleSelect = (property) => {
-        setSearchTerm('');   // Clear input
-        setSuggestions([]);  // Clear dropdown
-        onSelectListing(property); // Open the card
+        setSearchTerm('');   
+        setSuggestions([]);  
+        onSelectListing(property); 
 
-        // SMOOTH FLY-TO ANIMATION
+        // Smooth animation to the selected pin
         map.flyTo([property.lat, property.lon], 16, {
             animate: true,
-            duration: 1.5 // Slower, smoother glide
+            duration: 1.5 
         });
     };
 
     return (
+        // The UI for the pill-shaped search bar
         <div className="search-container">
             <div className="search-box">
-                {/* Search Icon (using text for simplicity, can be SVG) */}
                 <span className="search-icon">🔍</span>
                 <input 
                     type="text" 
@@ -82,8 +103,7 @@ const SearchBar = ({ listings, onSelectListing }) => {
                     onChange={handleInputChange}
                 />
             </div>
-
-            {/* Dropdown Suggestions */}
+            {/* Dropdown suggestions list */}
             {suggestions.length > 0 && (
                 <ul className="search-suggestions">
                     {suggestions.map(property => (
@@ -104,12 +124,23 @@ const SearchBar = ({ listings, onSelectListing }) => {
     );
 };
 
+// ==========================================
+// 5. MAIN COMPONENT: PROPERTY MAP
+// ==========================================
 const PropertyMap = () => {
-  const [listings, setListings] = useState([]);
+  // STATE MANAGEMENT
+  const [listings, setListings] = useState([]); // Holds all the pins
   const [loading, setLoading] = useState(true);
-  const [selectedListing, setSelectedListing] = useState(null); 
+  const [selectedListing, setSelectedListing] = useState(null); // Which popup is open?
   const navigate = useNavigate();
 
+  // ==========================================
+  // 6. INITIAL DATA FETCH
+  // ==========================================
+  // ⚠️ PROBLEM AREA: This useEffect runs once on load.
+  // It hits '/api/listings' with NO parameters.
+  // This downloads ALL Active listings (~500+).
+  // It does NOT have a way to ask for "Sold" or "Pending".
   useEffect(() => {
     const isLocal = window.location.hostname === 'localhost';
     const apiUrl = isLocal ? 'http://localhost:8000/api/listings' : '/api/listings';
@@ -134,8 +165,11 @@ const PropertyMap = () => {
           <Header />
         </div>
 
+      {/* THE MAP CONTAINER
+         This holds everything: Tiles, Markers, and the SearchBar 
+      */}
       <MapContainer 
-        center={[45.7276, -121.4865]} // <--- White Salmon, WA
+        center={[45.7276, -121.4865]} 
         zoom={12} 
         scrollWheelZoom={true}
         className="leaflet-container"
@@ -148,18 +182,21 @@ const PropertyMap = () => {
 
         <MapEvents clearSelection={() => setSelectedListing(null)} />
         
-        {/* --- PLACE SEARCH BAR INSIDE MAPCONTAINER --- */}
-        {/* Why inside? Because it needs access to 'useMap()' hook to flyTo() */}
+        {/* ⚠️ ARCHITECTURAL CONFLICT: 
+           You are using 'SearchBar' (defined above).
+           This puts the search bar INSIDE the map.
+           We want to DELETE this line and put <FilterBar /> ABOVE the map instead.
+        */}
         <SearchBar 
             listings={listings} 
             onSelectListing={setSelectedListing} 
         />
 
+        {/* RENDERING THE PINS
+           This loops through your 'listings' state and draws a marker for each one.
+        */}
         {listings
-            /* 1. INSERT FILTER HERE */
-            .filter(property => property.lat && property.lon)
-            
-            /* 2. Then map over what is left */
+            .filter(property => property.lat && property.lon) // Safety check for bad data
             .map((property) => {
             const isSelected = selectedListing?.mls_number === property.mls_number;
             
@@ -167,12 +204,14 @@ const PropertyMap = () => {
               <Marker 
                 key={property.mls_number} 
                 position={[property.lat, property.lon]}
+                // Creates the price icon
                 icon={createPriceIcon(property.price, isSelected)}
+                // Brings selected pin to front (z-index)
                 zIndexOffset={isSelected ? 1000 : 0}
                 eventHandlers={{
                     click: (e) => {
-                        L.DomEvent.stopPropagation(e.originalEvent);
-                        setSelectedListing(property);
+                        L.DomEvent.stopPropagation(e.originalEvent); // Stop click from hitting map background
+                        setSelectedListing(property); // Open the popup
                     }
                 }}
               />
@@ -180,7 +219,10 @@ const PropertyMap = () => {
         })}
       </MapContainer>
 
-      {/* --- RESPONSIVE PROPERTY CARD --- */}
+      {/* THE POPUP CARD
+         This sits 'absolute' positioned over the map.
+         It only shows up if 'selectedListing' is not null.
+      */}
       {selectedListing && (
         <div className="property-card-container">
             <button className="close-card-btn" onClick={() => setSelectedListing(null)}>×</button>
@@ -220,7 +262,6 @@ const PropertyMap = () => {
                 <button 
                     className="view-details-btn"
                     onClick={() => {
-                        // Use 'selectedListing' because that is what holds the data for the open card
                         const slug = createSlug(selectedListing.address, selectedListing.city, selectedListing.zipcode);
                         navigate(`/property/${slug}/${selectedListing.mls_number}`);
                     }}
