@@ -149,7 +149,7 @@
 }
 .back-link {
     text-decoration: none;
-    color: #006aff;
+    color: #1a5091;
     font-weight: 600;
     font-size: 1.5rem;
     display: inline-flex;
@@ -277,7 +277,7 @@
 .thumb-item:hover, .thumb-item.active {
     opacity: 1;
 }
-.thumb-item.active { border-color: #006aff; }
+.thumb-item.active { border-color: #1a5091; }
 
 .thumb-item img {
     width: 100%;
@@ -328,15 +328,20 @@
     background: white;
     border: 1px solid #d1d1d5;
     border-radius: 8px;
-    padding: 24px;
+    padding: 28px 24px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.card-header h3 { margin-top: 0; color: #006aff; }
+.card-header h3 {
+    margin: 0 0 20px 0;
+    color: #1a5091;
+    font-size: 22px;
+    text-align: center;
+}
 
 .primary-btn {
     width: 100%;
-    background-color: #006aff;
+    background-color: #1a5091;
     color: white;
     font-weight: 700;
     padding: 12px;
@@ -346,13 +351,13 @@
     cursor: pointer;
     font-size: 16px;
 }
-.primary-btn:hover { background-color: #0056cf; }
+.primary-btn:hover { background-color: #143d6e; }
 
 .secondary-btn {
     width: 100%;
     background-color: white;
-    color: #006aff;
-    border: 1px solid #006aff;
+    color: #1a5091;
+    border: 1px solid #1a5091;
     padding: 12px;
     font-weight: 700;
     border-radius: 4px;
@@ -369,10 +374,12 @@
 
 .contact-phone-display {
     text-align: center;
-    color: #596b82;
-    font-size: 14px;
-    margin-top: 8px;
+    color: #2a2a33;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 16px;
     margin-bottom: 0;
+    letter-spacing: 0.5px;
 }
 
 .agent-info {

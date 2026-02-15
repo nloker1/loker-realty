@@ -260,7 +260,6 @@ const PropertyDetails = () => {
                         <div className="sticky-contact-card">
                             <div className="card-header">
                                 <h3>Request a Tour</h3>
-                                <p>Choose a time to see this home</p>
                             </div>
                             
                             <div className="contact-form">
