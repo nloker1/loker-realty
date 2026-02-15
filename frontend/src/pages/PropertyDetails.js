@@ -264,10 +264,16 @@ const PropertyDetails = () => {
                             </div>
                             
                             <div className="contact-form">
-                                <button className="primary-btn" onClick={() => window.location.href = "tel:+15413997756"}>
-                                    Schedule Viewing
-                                </button>
-                                <button className="secondary-btn">Contact Agent</button>
+                                <a href="tel:+15413997756" className="primary-btn contact-link">
+                                    📞 Call to Schedule
+                                </a>
+                                <a 
+                                    href={`sms:+15413997756?body=${encodeURIComponent(`Hi Nate, I'm interested in scheduling a showing for the property at ${listing.is_address_exposed ? listing.address : `MLS# ${listing.mls_number}`}. When are you available?`)}`} 
+                                    className="secondary-btn contact-link"
+                                >
+                                    💬 Text to Schedule
+                                </a>
+                                <p className="contact-phone-display">(541) 399-7756</p>
                             </div>
 
  
