@@ -1,76 +1,94 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './PropertyDetails.css';
+
+const MAX_THUMBS = 30;
+
+const API_BASE = process.env.REACT_APP_API_BASE
+    || (window.location.hostname === 'localhost' ? 'http://localhost:8000/api/listings' : '/api/listings');
 
 const PropertyDetails = () => {
     const { mls_number } = useParams();
     const [listing, setListing] = useState(null);
     const [mainImage, setMainImage] = useState('');
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
     // --- FETCH LOGIC ---
     useEffect(() => {
-        const isLocal = window.location.hostname === 'localhost';
-        const apiBase = isLocal ? 'http://localhost:8000/api/listings' : '/api/listings';
-
         setLoading(true);
+        setError(null);
 
-        fetch(`${apiBase}/${mls_number}`)
+        fetch(`${API_BASE}/${mls_number}`)
             .then(res => {
-                if (!res.ok) throw new Error("Listing not found");
+                if (res.status === 404) throw new Error("not_found");
+                if (!res.ok) throw new Error("server_error");
                 return res.json();
             })
             .then(data => {
-                // 1. FILTER: Remove images where is_private is true
                 if (data.images) {
                     data.images = data.images.filter(img => !img.is_private);
                 }
                 setListing(data);
-                // 2. Set Main Image (safely using the filtered list)
                 setMainImage(data.images?.[0]?.url || data.photo_url);
                 setLoading(false);
             })
             .catch(err => {
                 console.error("Error:", err);
+                setError(err.message === 'not_found' ? 'not_found' : 'error');
                 setLoading(false);
             });
     }, [mls_number]);
 
-    // --- KEYBOARD SUPPORT (Escape to Close, Arrows to Navigate) ---
+    // --- BODY SCROLL LOCK ---
+    useEffect(() => {
+        if (isLightboxOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isLightboxOpen]);
+
+    // --- GALLERY LOGIC (useCallback to avoid stale closures) ---
+    const handleNext = useCallback((e) => {
+        if (e) e.stopPropagation();
+        if (!listing?.images?.length) return;
+        setMainImage(prev => {
+            const currentIndex = listing.images.findIndex(img => img.url === prev);
+            const nextIndex = (currentIndex + 1) % listing.images.length;
+            return listing.images[nextIndex].url;
+        });
+    }, [listing]);
+
+    const handlePrev = useCallback((e) => {
+        if (e) e.stopPropagation();
+        if (!listing?.images?.length) return;
+        setMainImage(prev => {
+            const currentIndex = listing.images.findIndex(img => img.url === prev);
+            const prevIndex = (currentIndex - 1 + listing.images.length) % listing.images.length;
+            return listing.images[prevIndex].url;
+        });
+    }, [listing]);
+
+    // --- KEYBOARD SUPPORT ---
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (!isLightboxOpen) return;
-            
             if (e.key === 'Escape') setIsLightboxOpen(false);
-            if (e.key === 'ArrowRight') handleNext(e);
-            if (e.key === 'ArrowLeft') handlePrev(e);
+            if (e.key === 'ArrowRight') handleNext();
+            if (e.key === 'ArrowLeft') handlePrev();
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isLightboxOpen, listing, mainImage]); // Dependencies ensure state is fresh
-
-    // --- GALLERY LOGIC ---
-    const handleNext = (e) => {
-        e.stopPropagation();
-        if (!listing.images || listing.images.length === 0) return;
-        const currentIndex = listing.images.findIndex(img => img.url === mainImage);
-        const nextIndex = (currentIndex + 1) % listing.images.length;
-        setMainImage(listing.images[nextIndex].url);
-    };
-
-    const handlePrev = (e) => {
-        e.stopPropagation();
-        if (!listing.images || listing.images.length === 0) return;
-        const currentIndex = listing.images.findIndex(img => img.url === mainImage);
-        const prevIndex = (currentIndex - 1 + listing.images.length) % listing.images.length;
-        setMainImage(listing.images[prevIndex].url);
-    };
+    }, [isLightboxOpen, handleNext, handlePrev]);
 
     if (loading) return <div className="loading-state">Loading Property Details...</div>;
-    if (!listing) return <div className="error-state">Property not found. <Link to="/map">Return to Map</Link></div>;
+    if (error === 'not_found') return <div className="error-state">Property not found. <Link to="/map">Return to Map</Link></div>;
+    if (error || !listing) return <div className="error-state">Something went wrong loading this property. <Link to="/map">Return to Map</Link></div>;
 
     const priceFormatted = listing.price?.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
@@ -121,13 +139,11 @@ const PropertyDetails = () => {
             <div className="media-section">
                 <div className="main-media-container">
 
-                    {/* Add onClick here to trigger lightbox */}
                     <img 
                         src={mainImage || listing.photo_url} 
                         alt="Property Main" 
-                        className="main-hero-img" 
-                        onClick={() => setIsLightboxOpen(true)} // <--- TRIGGER
-                        style={{ cursor: 'zoom-in' }} // UX Hint
+                        className="main-hero-img clickable-hero" 
+                        onClick={() => setIsLightboxOpen(true)}
                     />
                     
                     {/* Left Arrow */}
@@ -135,11 +151,16 @@ const PropertyDetails = () => {
                         <button className="gallery-arrow left" onClick={handlePrev}>&#10094;</button>
                     )}
 
-                    <img src={mainImage || listing.photo_url} alt="Property Main" className="main-hero-img" />
-
                     {/* Right Arrow */}
                     {listing.images?.length > 1 && (
                         <button className="gallery-arrow right" onClick={handleNext}>&#10095;</button>
+                    )}
+
+                    {/* Image Counter Badge */}
+                    {listing.images?.length > 1 && (
+                        <span className="hero-image-count" onClick={() => setIsLightboxOpen(true)}>
+                            📷 {listing.images.findIndex(img => img.url === mainImage) + 1} / {listing.images.length}
+                        </span>
                     )}
                 </div>
                 
@@ -149,7 +170,7 @@ const PropertyDetails = () => {
                         <div className="thumb-scroll-container">
                             <div className="thumb-bar">
                                 {listing.images.map((img, i) => (
-                                    i < 30 && (
+                                    i < MAX_THUMBS && (
                                     <div 
                                         key={i} 
                                         className={`thumb-item ${(mainImage === img.url) ? 'active' : ''}`}
@@ -259,7 +280,9 @@ const PropertyDetails = () => {
                     <aside className="right-column">
                         <div className="sticky-contact-card">
                             <div className="card-header">
-                                <h3>Request a Tour</h3>
+                                <img src="/head_shot.jpg" alt="Nate Loker" className="agent-headshot" />
+                                <h3>Nate Loker</h3>
+                                <p className="agent-subtitle">Real Broker, LLC</p>
                             </div>
                             
                             <div className="contact-form">
