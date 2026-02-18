@@ -34,6 +34,26 @@ const PropertyDetails = () => {
                 setListing(data);
                 setMainImage(data.images?.[0]?.url || data.photo_url);
                 setLoading(false);
+
+                // --- DYNAMIC SEO UPDATES ---
+                const address = data.is_address_exposed ? data.address : `MLS# ${data.mls_number}`;
+                const price = data.price?.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+                const beds = data.beds || 0;
+                const baths = data.baths || 0;
+                const city = data.city || '';
+                const state = data.state || '';
+
+                // Update Page Title
+                document.title = `${address}, ${city}, ${state} | ${price} | Loker Realty`;
+
+                // Update Meta Description
+                let metaDescription = document.querySelector('meta[name="description"]');
+                if (!metaDescription) {
+                    metaDescription = document.createElement('meta');
+                    metaDescription.name = "description";
+                    document.head.appendChild(metaDescription);
+                }
+                metaDescription.setAttribute("content", `View details for ${address} in ${city}, ${state}. ${beds} beds, ${baths} baths, priced at ${price}. Expert real estate service by Nate Loker.`);
             })
             .catch(err => {
                 console.error("Error:", err);
@@ -83,7 +103,11 @@ const PropertyDetails = () => {
         };
 
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            // Reset metadata when leaving the page
+            document.title = "Loker Realty";
+        };
     }, [isLightboxOpen, handleNext, handlePrev]);
 
     if (loading) return <div className="loading-state">Loading Property Details...</div>;
