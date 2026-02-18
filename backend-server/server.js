@@ -14,11 +14,17 @@ app.use(cors()); // Enable CORS for cross-origin requests
 
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
-    user: process.env.EMAIL_USER, // Use environment variable for email
-    pass: process.env.EMAIL_PASSWORD, // Use environment variable for password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
   },
+  tls: {
+    rejectUnauthorized: true,
+  },
+  family: 4, // Force IPv4 — fixes DigitalOcean IPv6 resolution issues
 });
 
 app.post('/submit-form', async (req, res) => {
@@ -51,7 +57,7 @@ app.post('/submit-form', async (req, res) => {
 
 
 app.get("/", (req, res) => {
-    res.send("🚀 Loker Realty API is running!");
+    res.send("🚀 Gorge Realty API is running!");
 });
 
 const client = SibApiV3Sdk.ApiClient.instance;
