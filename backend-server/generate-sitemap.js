@@ -11,8 +11,9 @@ if (!process.env.DATABASE_URL) {
 }
 
 // Create a local pool
+// IMPORTANT: We use the DATABASE_URL from .env but override the database name if needed
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL.replace('/lokerrealty', '/listing_alerts')
 });
 
 async function generateSitemap() {
