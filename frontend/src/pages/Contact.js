@@ -27,7 +27,7 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const apiBaseUrl = process.env.REACT_APP_API_URL || "https://www.lokerrealty.com";
+    const apiBaseUrl = process.env.REACT_APP_API_URL || "https://www.gorgerealty.com";
     const submitFormEndpoint = `${apiBaseUrl}/submit-form`;
 
     try {

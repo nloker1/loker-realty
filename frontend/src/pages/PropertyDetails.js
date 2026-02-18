@@ -44,7 +44,7 @@ const PropertyDetails = () => {
                 const state = data.state || '';
 
                 // Update Page Title
-                document.title = `${address}, ${city}, ${state} | ${price} | Loker Realty`;
+                document.title = `${address}, ${city}, ${state} | ${price} | Gorge Realty`;
 
                 // Update Meta Description
                 let metaDescription = document.querySelector('meta[name="description"]');
@@ -106,7 +106,7 @@ const PropertyDetails = () => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
             // Reset metadata when leaving the page
-            document.title = "Loker Realty";
+            document.title = "Gorge Realty";
         };
     }, [isLightboxOpen, handleNext, handlePrev]);
 
