@@ -34,7 +34,7 @@ async function generateSitemap() {
   try {
     // 1. Fetch all active listings from the database
     const result = await pool.query(`
-      SELECT mls_number, address, city, state 
+      SELECT mls_number, address 
       FROM listings 
       WHERE is_published = true AND status = 'Active'
     `);
@@ -56,8 +56,8 @@ async function generateSitemap() {
 
     // 4. Add Dynamic Property Pages
     listings.forEach(listing => {
-      // Create slug: "123-main-st-city-state"
-      const slug = `${listing.address}-${listing.city}-${listing.state}`
+      // Create slug: Since address already includes city/state, we just slugify it directly
+      const slug = `${listing.address}`
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '');
