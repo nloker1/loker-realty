@@ -12,6 +12,7 @@ const Home = () => {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
+    document.title = "Gorge Realty | Columbia Gorge Real Estate | Nate Loker";
     // Check if the user has already seen the pop-up
     const hasVisited = localStorage.getItem("hasVisited");
 

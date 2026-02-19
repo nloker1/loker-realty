@@ -13,7 +13,8 @@ if (!process.env.DATABASE_URL) {
 // Create a local pool
 // IMPORTANT: We use the DATABASE_URL from .env but override the database name if needed
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL.replace('/lokerrealty', '/listing_alerts')
+  connectionString: process.env.DATABASE_URL.replace('/lokerrealty', '/listing_alerts'),
+  ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false }
 });
 
 async function generateSitemap() {
@@ -25,7 +26,6 @@ async function generateSitemap() {
     '/contact',
     '/map',
     '/dashboard',
-    '/blog',
     '/market/hood-river',
     '/market/white-salmon',
     '/market/the-dalles'
