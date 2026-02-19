@@ -3,6 +3,7 @@ import './FilterBar.css';
 
 const FilterBar = ({ onSearch, resultCount, loading }) => {
     const [search, setSearch] = useState('');
+    const [selectedCities, setSelectedCities] = useState([]);
     const [propertyType, setPropertyType] = useState('');
     const [minBeds, setMinBeds] = useState('');
     const [minBaths, setMinBaths] = useState('');
@@ -20,14 +21,16 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
 
     const buildFilters = useCallback((overrides = {}) => {
         const merged = {
-            search, propertyType, minBeds, minBaths, priceRange, sqftRange,
+            search, selectedCities, propertyType, minBeds, minBaths, priceRange, sqftRange,
             ...overrides
         };
         const price = parseRange(merged.priceRange);
         const sqft = parseRange(merged.sqftRange);
+
         return {
             status: 'Active',
-            search: merged.search || undefined,
+            search: (merged.search || '').trim() || undefined,
+            cities: merged.selectedCities && merged.selectedCities.length > 0 ? merged.selectedCities : undefined,
             propertyType: merged.propertyType || undefined,
             minBeds: merged.minBeds || undefined,
             minBaths: merged.minBaths || undefined,
@@ -36,13 +39,31 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
             minSqft: sqft.min || undefined,
             maxSqft: sqft.max || undefined,
         };
-    }, [search, propertyType, minBeds, minBaths, priceRange, sqftRange]);
+    }, [search, selectedCities, propertyType, minBeds, minBaths, priceRange, sqftRange]);
 
     // Auto-apply: every dropdown change triggers a fetch
     const handleFilterChange = (setter, key) => (e) => {
         const val = e.target.value;
         setter(val);
         onSearch(buildFilters({ [key]: val }));
+    };
+
+    const handleCityChange = (e) => {
+        const city = e.target.value;
+        if (!city) return;
+
+        let newCities;
+        if (selectedCities.includes(city)) {
+            newCities = selectedCities.filter(c => c !== city);
+        } else {
+            newCities = [...selectedCities, city];
+        }
+        
+        setSelectedCities(newCities);
+        onSearch(buildFilters({ selectedCities: newCities }));
+        
+        // Reset the select value so the same city can be toggled again
+        e.target.value = "";
     };
 
     // Text search submits on Enter
@@ -54,12 +75,12 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
     };
 
     // Count active filters for the badge
-    const activeCount = [propertyType, minBeds, minBaths, priceRange, sqftRange]
+    const activeCount = [propertyType, minBeds, minBaths, priceRange, sqftRange, search, ...selectedCities]
         .filter(Boolean).length;
 
     return (
         <div className="filter-bar">
-            {/* Search row */}
+            {/* Search row (Desktop only) */}
             <div className="filter-search-row">
                 <div className="filter-search-box">
                     <svg className="filter-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -68,7 +89,7 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
                     </svg>
                     <input
                         type="text"
-                        placeholder="City or Zip..."
+                        placeholder="Search address, MLS..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={handleSearchKeyDown}
@@ -94,6 +115,43 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
             {/* Scrollable pill row */}
             <div className="filter-pill-row">
                 <div className="filter-pill-scroll">
+                    {/* City filter (New pill for mobile/desktop) */}
+                    <label className={`filter-pill ${selectedCities.length > 0 ? 'active' : ''}`}>
+                        <select
+                            value=""
+                            onChange={handleCityChange}
+                        >
+                            <option value="">{selectedCities.length > 0 ? `${selectedCities.length} Cities` : 'City'}</option>
+                            <option value="Hood River">Hood River {selectedCities.includes('Hood River') ? '✓' : ''}</option>
+                            <option value="White Salmon">White Salmon {selectedCities.includes('White Salmon') ? '✓' : ''}</option>
+                            <option value="The Dalles">The Dalles {selectedCities.includes('The Dalles') ? '✓' : ''}</option>
+                            <option value="Bingen">Bingen {selectedCities.includes('Bingen') ? '✓' : ''}</option>
+                            <option value="Lyle">Lyle {selectedCities.includes('Lyle') ? '✓' : ''}</option>
+                            <option value="Odell">Odell {selectedCities.includes('Odell') ? '✓' : ''}</option>
+                            <option value="Mt Hood Prkdl">Parkdale {selectedCities.includes('Mt Hood Prkdl') ? '✓' : ''}</option>
+                            <option value="Mosier">Mosier {selectedCities.includes('Mosier') ? '✓' : ''}</option>
+                            <option value="Cascade Locks">Cascade Locks {selectedCities.includes('Cascade Locks') ? '✓' : ''}</option>
+                            <option value="Cook">Cook {selectedCities.includes('Cook') ? '✓' : ''}</option>
+                            <option value="Stevenson">Stevenson {selectedCities.includes('Stevenson') ? '✓' : ''}</option>
+                            <option value="Snowden">Snowden {selectedCities.includes('Snowden') ? '✓' : ''}</option>
+                            <option value="Trout Lake">Trout Lake {selectedCities.includes('Trout Lake') ? '✓' : ''}</option>
+                            <option value="BZ Corner">BZ Corner {selectedCities.includes('BZ Corner') ? '✓' : ''}</option>
+                            <option value="Dallesport">Dallesport {selectedCities.includes('Dallesport') ? '✓' : ''}</option>
+                            <option value="Home Valley">Home Valley {selectedCities.includes('Home Valley') ? '✓' : ''}</option>
+                            <option value="Underwood">Underwood {selectedCities.includes('Underwood') ? '✓' : ''}</option>
+                        </select>
+                        <span className="filter-pill-label">
+                            {selectedCities.length === 0 
+                                ? 'City' 
+                                : selectedCities.length === 1 
+                                    ? selectedCities[0] 
+                                    : `${selectedCities.length} Cities`}
+                        </span>
+                        <svg className="filter-pill-chevron" viewBox="0 0 12 12" width="10" height="10">
+                            <path d="M3 4.5L6 7.5L9 4.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </label>
+
                     <label className={`filter-pill ${propertyType ? 'active' : ''}`}>
                         <select
                             value={propertyType}

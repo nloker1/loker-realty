@@ -9,33 +9,9 @@ import Popup from '../components/shared/Popup'; // Import the pop-up component
 import './Home.css'; 
 
 const Home = () => {
-  const [showPopup, setShowPopup] = useState(false);
-
   useEffect(() => {
     document.title = "Gorge Realty | Columbia Gorge Real Estate | Nate Loker";
-    // Check if the user has already seen the pop-up
-    const hasVisited = localStorage.getItem("hasVisited");
-
-    if (!hasVisited) {
-      // Show pop-up after 5 seconds
-      const timer = setTimeout(() => {
-        setShowPopup(true);
-      }, 5000);
-
-      return () => clearTimeout(timer);
-    }
   }, []);
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    localStorage.setItem("hasVisited", "true"); // Save that the user has seen the pop-up
-  };
-
-  const handleSubscribe = (email) => {
-    console.log("Subscribing:", email);
-    localStorage.setItem("hasVisited", "true"); // Prevent pop-up from showing again
-    setShowPopup(false);
-  };
 
   return (
     <div>
@@ -62,9 +38,6 @@ const Home = () => {
       <SoldTestimonialToggle />
 
       <Footer />
-
-      {/* Pop-up component - only renders if showPopup is true */}
-      {showPopup && <Popup onClose={handleClosePopup} onSubscribe={handleSubscribe} />}
     </div>
   );
 }

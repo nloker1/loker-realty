@@ -49,6 +49,12 @@ const buildApiUrl = (baseUrl, filters = {}) => {
 
     if (filters.status) params.append('status', filters.status);
     if (filters.search) params.append('search', filters.search);
+    
+    // Handle multiple cities
+    if (filters.cities && Array.isArray(filters.cities)) {
+        filters.cities.forEach(city => params.append('cities', city));
+    }
+
     if (filters.propertyType) params.append('property_type', filters.propertyType);
     if (filters.minBeds) params.append('min_beds', filters.minBeds);
     if (filters.minBaths) params.append('min_baths', filters.minBaths);

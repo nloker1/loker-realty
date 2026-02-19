@@ -14,10 +14,17 @@
 /* ------- SEARCH ROW ------- */
 
 .filter-search-row {
-    display: flex;
+    display: none; /* Hidden on mobile by default */
     align-items: center;
     gap: 10px;
     margin-bottom: 8px;
+}
+
+@media (min-width: 768px) {
+    .filter-search-row {
+        display: flex; /* Show search on desktop */
+        margin-bottom: 0;
+    }
 }
 
 .filter-search-box {
