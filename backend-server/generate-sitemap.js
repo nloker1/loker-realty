@@ -41,7 +41,9 @@ async function generateSitemap() {
     const listings = result.rows;
 
     // 2. Start building the XML string
+    const now = new Date().toISOString();
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated at: ${now} -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
     // 3. Add Static Pages
