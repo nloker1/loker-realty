@@ -75,9 +75,22 @@ async function generateSitemap() {
     xml += `
 </urlset>`;
 
-    // 5. Write to the frontend public folder so it's accessible at gorgerealty.com/sitemap.xml
-    const outputPath = path.join(__dirname, '../frontend/public/sitemap.xml');
-    fs.writeFileSync(outputPath, xml);
+    // 5. Write to the frontend public folder AND the production folder if it exists
+    const localPath = path.join(__dirname, '../frontend/public/sitemap.xml');
+    const prodPath = '/var/www/lokerrealty/sitemap.xml';
+
+    fs.writeFileSync(localPath, xml);
+    console.log(`✅ Local sitemap generated at ${localPath}`);
+
+    // Try to write to production path if accessible
+    try {
+        if (fs.existsSync('/var/www/lokerrealty')) {
+            fs.writeFileSync(prodPath, xml);
+            console.log(`🚀 Production sitemap updated at ${prodPath}`);
+        }
+    } catch (e) {
+        console.log(`⚠️ Could not write to ${prodPath} (likely permission issue).`);
+    }
 
     console.log(`✅ Sitemap generated with ${staticPages.length} static pages and ${listings.length} listings!`);
     process.exit(0);
