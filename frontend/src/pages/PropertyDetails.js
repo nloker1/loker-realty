@@ -44,7 +44,8 @@ const PropertyDetails = () => {
                 const state = data.state || '';
 
                 // Update Page Title
-                document.title = `${address}, ${city}, ${state} | ${price} | Gorge Realty`;
+                const fullAddress = `${address}, ${city}, ${state}`;
+                document.title = `${fullAddress} | ${price} | Gorge Realty`;
 
                 // Update Meta Description
                 let metaDescription = document.querySelector('meta[name="description"]');
@@ -54,6 +55,64 @@ const PropertyDetails = () => {
                     document.head.appendChild(metaDescription);
                 }
                 metaDescription.setAttribute("content", `View details for ${address} in ${city}, ${state}. ${beds} beds, ${baths} baths, priced at ${price}. Expert real estate service by Nate Loker.`);
+
+                // --- 1. JSON-LD SCHEMA (SEO) ---
+                let scriptTag = document.getElementById('property-schema');
+                if (!scriptTag) {
+                    scriptTag = document.createElement('script');
+                    scriptTag.id = 'property-schema';
+                    scriptTag.type = 'application/ld+json';
+                    document.head.appendChild(scriptTag);
+                }
+
+                const schemaData = {
+                    "@context": "https://schema.org",
+                    "@type": "RealEstateListing",
+                    "name": `${fullAddress} - MLS# ${data.mls_number}`,
+                    "description": `Beautiful ${data.property_type} in ${city}, ${state}. ${beds} bedrooms, ${baths} bathrooms, ${data.sqft} sqft.`,
+                    "url": window.location.href,
+                    "image": data.images?.[0]?.url || data.photo_url,
+                    "datePosted": data.last_updated,
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": data.address,
+                        "addressLocality": city,
+                        "addressRegion": state,
+                        "addressCountry": "US"
+                    },
+                    "offers": {
+                        "@type": "Offer",
+                        "price": data.price,
+                        "priceCurrency": "USD",
+                        "availability": "https://schema.org/InStock"
+                    }
+                };
+                scriptTag.text = JSON.stringify(schemaData);
+
+                // --- 2. CANONICAL TAG (SEO) ---
+                let canonicalTag = document.querySelector('link[rel="canonical"]');
+                if (!canonicalTag) {
+                    canonicalTag = document.createElement('link');
+                    canonicalTag.rel = 'canonical';
+                    document.head.appendChild(canonicalTag);
+                }
+                canonicalTag.setAttribute("href", window.location.href.split('?')[0]);
+
+                // --- 3. OPEN GRAPH (SOCIAL) ---
+                const setOgTag = (property, content) => {
+                    let tag = document.querySelector(`meta[property="${property}"]`);
+                    if (!tag) {
+                        tag = document.createElement('meta');
+                        tag.setAttribute("property", property);
+                        document.head.appendChild(tag);
+                    }
+                    tag.setAttribute("content", content);
+                };
+                setOgTag("og:title", `${fullAddress} | ${price}`);
+                setOgTag("og:description", `Check out this listing: ${beds} beds, ${baths} baths in ${city}. Presented by Nate Loker.`);
+                setOgTag("og:image", data.images?.[0]?.url || data.photo_url);
+                setOgTag("og:type", "website");
+                setOgTag("og:url", window.location.href);
             })
             .catch(err => {
                 console.error("Error:", err);
@@ -165,7 +224,7 @@ const PropertyDetails = () => {
 
                     <img 
                         src={mainImage || listing.photo_url} 
-                        alt="Property Main" 
+                        alt={`${listing.is_address_exposed ? listing.address : `MLS# ${listing.mls_number}`} - ${listing.city}, ${listing.state} Real Estate Listing`} 
                         className="main-hero-img clickable-hero" 
                         onClick={() => setIsLightboxOpen(true)}
                     />
