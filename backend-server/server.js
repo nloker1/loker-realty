@@ -3,9 +3,74 @@ const nodemailer = require('nodemailer');
 const cors = require('cors');
 const pool = require('./db')
 const SibApiV3Sdk = require('sib-api-v3-sdk');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
+
+// --- BOT-FRIENDLY OPEN GRAPH MIDDLEWARE ---
+// This ensures that iMessage, Facebook, and Twitter show the big property photo
+app.get('/property/:slug/:mls_number', async (req, res, next) => {
+    const { mls_number } = req.params;
+    const userAgent = (req.headers['user-agent'] || '').toLowerCase();
+    const botPatterns = ['facebookexternalhit', 'twitterbot', 'slackbot', 'linkedinbot', 'whatsapp', 'telegrambot', 'discordbot', 'slack-imgproxy'];
+    const isBot = botPatterns.some(pattern => userAgent.includes(pattern));
+
+    // If it's not a bot, let the React frontend handle it
+    if (!isBot) {
+        return next();
+    }
+
+    try {
+        const result = await pool.query('SELECT * FROM listings WHERE mls_number = $1', [mls_number]);
+        const listing = result.rows[0];
+
+        if (!listing) return next();
+
+        // 1. Read the base index.html
+        const buildPath = path.join(__dirname, '../frontend/build/index.html');
+        if (!fs.existsSync(buildPath)) return next();
+        
+        let html = fs.readFileSync(buildPath, 'utf8');
+
+        // 2. Prepare dynamic meta tags
+        const priceFormatted = listing.price?.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+        const title = `${listing.address}, ${listing.city}, ${listing.state} | ${priceFormatted} | Gorge Realty`;
+        const description = `${listing.beds} beds, ${listing.baths} baths, ${listing.sqft?.toLocaleString()} sqft. View full details and schedule a showing with Nate Loker.`;
+        const imageUrl = listing.photo_url || 'https://gorgerealty.com/gorge_photo.jpg';
+
+        // 3. Inject tags into the head
+        const ogTags = `
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${description}" />
+    <meta property="og:image" content="${imageUrl}" />
+    <meta property="og:url" content="https://gorgerealty.com/property/${req.params.slug}/${mls_number}" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${title}" />
+    <meta name="twitter:description" content="${description}" />
+    <meta name="twitter:image" content="${imageUrl}" />
+        `;
+
+        // Replace generic title if it exists, otherwise just inject after <head>
+        if (html.includes('<title>')) {
+            html = html.replace(/<title>.*?<\/title>/, ogTags);
+        } else {
+            html = html.replace('<head>', '<head>' + ogTags);
+        }
+
+        // 4. Send the bot-optimized HTML
+        res.send(html);
+
+    } catch (err) {
+        console.error('Bot Middleware Error:', err);
+        next();
+    }
+});
+
 
 // Middleware
 app.use(express.json()); // Parse JSON requests
