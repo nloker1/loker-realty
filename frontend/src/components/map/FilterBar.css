@@ -1,0 +1,236 @@
+/* ==============================
+   FILTER BAR — Mobile First
+   Modeled after Zillow's map UI
+   ============================== */
+
+.filter-bar {
+    background: #fff;
+    border-bottom: 1px solid #e2e4e8;
+    padding: 10px 12px 8px;
+    z-index: 500;
+    position: relative;
+}
+
+/* ------- SEARCH ROW ------- */
+
+.filter-search-row {
+    display: none; /* Hidden on mobile by default */
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+@media (min-width: 768px) {
+    .filter-search-row {
+        display: flex; /* Show search on desktop */
+        margin-bottom: 0;
+    }
+}
+
+.filter-search-box {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.filter-search-icon {
+    position: absolute;
+    left: 12px;
+    color: #6b7280;
+    pointer-events: none;
+}
+
+.filter-search-input {
+    width: 100%;
+    height: 38px;
+    padding: 0 32px 0 36px;
+    border: 1px solid #d1d5db;
+    border-radius: 20px;
+    background: #f7f8fa;
+    font-size: 14px;
+    color: #1f2937;
+    outline: none;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.filter-search-input:focus {
+    border-color: #006aff;
+    background: #fff;
+}
+
+.filter-search-input::placeholder {
+    color: #9ca3af;
+}
+
+.filter-search-clear {
+    position: absolute;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: #d1d5db;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.filter-search-clear:hover {
+    background: #9ca3af;
+}
+
+/* Result count badge */
+.filter-result-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ------- PILL ROW ------- */
+
+.filter-pill-row {
+    overflow: hidden;
+}
+
+.filter-pill-scroll {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    padding-bottom: 2px; /* prevent clipping of focus outlines */
+}
+
+.filter-pill-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* ------- INDIVIDUAL PILL ------- */
+
+.filter-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 16px;
+    background: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.filter-pill:hover {
+    border-color: #9ca3af;
+    background: #f9fafb;
+}
+
+/* Active pill = filter is set */
+.filter-pill.active {
+    background: #eef4ff;
+    border-color: #006aff;
+    color: #006aff;
+}
+
+.filter-pill.active .filter-pill-chevron {
+    color: #006aff;
+}
+
+/* The visible label */
+.filter-pill-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: inherit;
+    pointer-events: none;
+}
+
+.filter-pill-chevron {
+    color: #9ca3af;
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+/* Hide the real select — it covers the pill for tap targets */
+.filter-pill select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 34px; /* Prevents iOS zoom on focus */
+    /* This ensures the mobile OS sees the "top" of the dropdown 
+       as the "top" of your pill */
+    transform: scale(1); 
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* ------- CLEAR ALL PILL ------- */
+
+.filter-pill-clear {
+    border-style: dashed;
+    color: #6b7280;
+    border-color: #d1d5db;
+    font-size: 13px;
+}
+
+.filter-pill-clear:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+.filter-pill-clear .filter-pill-label {
+    pointer-events: auto;
+}
+
+/* ------- DESKTOP (768px+) ------- */
+
+@media (min-width: 768px) {
+
+    .filter-bar {
+        padding: 10px 20px;
+        display: flex; 
+        align-items: center; 
+        
+        /* MAGIC PART: Centers the content horizontally */
+        justify-content: center; 
+        gap: 20px; /* Increased gap for a cleaner centered look */
+        
+        /* OPTIONAL: Limits the bar's width so it stays in the center */
+
+    }
+
+    .filter-search-input {
+        min-width: 300px;
+    }
+
+    .filter-pill {
+        height: 34px;
+        padding: 0 14px;
+    }
+
+    .filter-pill select{
+        height: 34px;
+        font-size: 16px;
+        padding: 0 14px;
+    }
+
+    .filter-pill-label {
+        font-size: 13px;
+    }
+}

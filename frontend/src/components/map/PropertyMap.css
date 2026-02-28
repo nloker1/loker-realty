@@ -1,0 +1,418 @@
+/* =========================================
+   1. GLOBAL MAP LAYOUT
+   ========================================= */
+
+.map-wrapper {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    height: 100vh;          /* Force full viewport height */
+    width: 100vw;
+    overflow: hidden;       /* No double scrollbars */
+}
+
+.map-header-container {
+    flex: 0 0 auto;       /* Do not shrink or grow */
+    position: relative;   /* Establish stacking context */
+    z-index: 2000;        /* CRITICAL: Must be > 1000 (Leaflet's max) */
+    background: white;    /* Ensure map doesn't show through */
+}
+
+.leaflet-container {
+    flex: 1;              /* Grow to fill all remaining space */
+    width: 100%;
+    z-index: 1;           /* Keep it below the header */
+}
+
+
+.map-loading {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #006aff;
+  font-weight: 600;
+}
+
+
+
+/* --- ZILLOW STYLE SEARCH BAR --- */
+.search-container {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    z-index: 5000; /* Above Map */
+    width: 90%;
+    max-width: 400px;
+    font-family: 'Open Sans', sans-serif; /* Clean font */
+}
+
+/* The "Pill" Shape */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 50px; /* Full rounded corners */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15); /* Soft, high-end shadow */
+    padding: 5px 20px;
+    height: 50px;
+    transition: all 0.2s ease;
+}
+
+/* Input Field */
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    background: transparent;
+    margin-left: 10px;
+}
+
+/* The Search Icon (Mag Glass) */
+.search-icon {
+    font-size: 20px;
+    color: #006aff; /* Zillow Blue */
+    cursor: pointer;
+}
+
+
+/* --- DROPDOWN SUGGESTIONS --- */
+.search-suggestions {
+    margin-top: 8px;
+    background: white;
+    border-radius: 12px; /* Slightly less rounded than the bar */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    list-style: none;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto; /* Scroll if too many results */
+}
+
+.suggestion-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    font-size: 14px;
+    color: #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.suggestion-item:hover {
+    background-color: #f7f9fc; /* Light blue hover */
+    color: #006aff;
+}
+
+.suggestion-price {
+    font-weight: bold;
+    color: #333;
+}
+
+/* --- CONTROL BAR CONTAINER --- */
+.map-controls-container {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000; /* Above Leaflet map */
+    
+    width: 90%;
+    max-width: 600px;
+    
+    display: flex;
+    flex-direction: column; /* Stack vertically by default (Mobile first) */
+    gap: 8px;
+}
+
+/* --- SEARCH BOX ROW --- */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    margin-left: 10px;
+    width: 100%;
+}
+
+/* --- FILTER ROW --- */
+.filter-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto; /* Allow horizontal scroll on tiny screens */
+    padding-bottom: 2px; /* For scrollbar breathing room */
+}
+
+/* --- THE DROPDOWNS --- */
+.map-filter {
+    appearance: none; /* Removes default browser arrow */
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+    white-space: nowrap;
+    
+    /* Adds a custom tiny arrow indicator */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 8px;
+    padding-right: 25px; /* Space for the arrow */
+}
+
+/* --- SAVE BUTTON (Tiny Version) --- */
+.save-search-btn-small {
+    background-color: #006aff; /* Zillow Blue */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,106,255,0.3);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* --- SEARCH SUGGESTIONS (Dropdown) --- */
+.search-suggestions {
+    position: absolute;
+    top: 55px; /* Below search bar */
+    left: 0;
+    right: 0;
+    background: white;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    overflow: hidden;
+}
+
+.suggestion-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 14px;
+}
+.suggestion-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* --- DESKTOP TWEAKS --- */
+@media (min-width: 768px) {
+    .map-controls-container {
+        flex-direction: row; /* Side by side on Desktop */
+        max-width: 800px;
+        align-items: center;
+    }
+    
+    .search-box {
+        flex: 2; /* Search bar takes 2x space */
+    }
+    
+    .filter-row {
+        flex: 3; /* Filters take 3x space */
+        justify-content: flex-start;
+    }
+}
+
+/* =========================================
+   2. MAP MARKERS (PRICE PILLS)
+   ========================================= */
+
+.custom-price-marker {
+  background: #006aff;
+  border: 1px solid white;
+  color: white;
+  font-weight: 700;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+}
+
+.custom-price-marker:hover {
+  transform: scale(1.1);
+  z-index: 999;
+}
+
+.custom-price-marker.selected {
+  background: #222;
+  border: 2px solid white;
+  transform: scale(1.15);
+  z-index: 1000 !important;
+}
+
+/* =========================================
+   3. PROPERTY CARD CONTAINER (Logic Split)
+   ========================================= */
+
+/* A. SHARED BASE STYLES (Applies to ALL screens) */
+.property-card-container {
+  background: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  z-index: 99999 !important; 
+  display: flex;
+  overflow: hidden;
+  position: fixed !important; 
+}
+
+/* --- MOVED LOGO BASE STYLES HERE --- */
+/* Placing this BEFORE the media queries ensures overrides work */
+.rmls-logo-overlay {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    z-index: 10;
+    width: auto;     /* Natural width */
+    height: 20px;    /* Base height (Desktop default) */
+}
+
+/* B. MOBILE LAYOUT (Bottom Sheet) - Screens < 768px */
+@media (max-width: 767px) {
+  .property-card-container {
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
+    height: 120px;
+    border-radius: 12px;
+    flex-direction: row;
+    top: auto !important; 
+    transform: none !important; 
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .search-bar-container {
+        top: 15px;
+    }
+
+  /* Mobile Inner Layout */
+  .card-image-wrapper { width: 38%; }
+  
+  /* THIS WILL NOW WORK (Because it comes AFTER the base style above) */
+  .rmls-logo-overlay {
+        bottom: 4px;
+        right: 4px;
+        height: 16px; 
+    }
+    
+  .card-content {
+    width: 62%;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .card-price { font-size: 18px; font-weight: 800; color: #1a1a1a; line-height: 1.1; }
+  .card-stats { font-size: 12px; color: #666; margin-bottom: 4px; }
+  .card-address { font-size: 12px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; }
+  .card-broker { display: none; }
+}
+
+/* C. DESKTOP LAYOUT (Center Pop-up) - Screens >= 768px */
+@media (min-width: 768px) {
+  .property-card-container {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 8px;
+    flex-direction: column; 
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -48%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+  }
+
+  .card-image-wrapper { width: 100%; height: 200px; }
+  .card-content { padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; }
+  .card-price { font-size: 24px; font-weight: 700; color: #333; }
+  .card-stats { font-size: 14px; color: #555; }
+  .card-address { font-size: 15px; color: #333; font-weight: 500; }
+  .card-broker { font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 12px; }
+}
+
+/* =========================================
+   4. CARD INNER ELEMENTS (Buttons & Badges)
+   ========================================= */
+
+.close-card-btn {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 24px; height: 24px;
+  font-size: 18px; line-height: 1;
+  cursor: pointer;
+  color: #555;
+  z-index: 10;
+}
+
+.card-image-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-image-wrapper .main-property-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Note: .rmls-logo-overlay was removed from here and moved up to Section 3A */
+
+.card-badge {
+  position: absolute;
+  bottom: 6px; left: 6px;
+  background: #28a745;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.view-details-btn {
+  background: #006aff;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: auto;
+}

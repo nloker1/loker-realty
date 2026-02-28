@@ -1,0 +1,103 @@
+/* White background for the entire section */
+.pricing-section {
+  background: #faf3e0;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column; /* Keeps header and boxes stacked */
+  align-items: center; /* Centers header */
+  text-align: center;
+}
+
+/* Header Styling */
+.pricing-section h1 {
+  font-size: 74px;
+  font-weight: bold;
+  border-bottom: 3px solid;
+  color: #333;
+  margin-bottom: 30px; /* Adds space between heading and pricing boxes */
+}
+
+/* New Wrapper for the Pricing Boxes */
+.pricing-wrapper {
+  display: flex;  /* Keeps boxes side by side */
+  justify-content: center;
+  gap: 80px;
+  max-width: 1200px;
+  width: 100%;
+  margin-bottom: 30px;
+  padding: 30px;
+}
+
+
+
+/* Table Container */
+.pricing-table {
+  width: 100%;
+  max-width: 1000px;
+  overflow-x: auto; /* Ensures responsiveness */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Adds a soft shadow */
+  border-radius: 8px;
+
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  font-size: 24px;
+
+}
+
+/* Table Header */
+th {
+  background-color: black; /* Your requested color  lighter tan #fffcf3*/
+  color: #f8f9fa;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 32px;
+
+}
+
+/* Table Rows */
+td {
+  padding: 12px;
+  text-align: left;
+  font-weight:bold;
+
+}
+
+td:first-child, th:first-child {
+  width: 30%; /* Adjust as needed */
+}
+
+/* Alternating Row Colors for Readability */
+tbody tr:nth-child(even) {
+  background-color: #fffcf3;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: white;
+}
+
+/* Mobile-Friendly: Stack Columns */
+@media (max-width: 768px) {
+
+.pricing-section h1 {
+  font-size: 46px;
+  padding: 20px;
+  }
+
+.pricing-wrapper{
+  padding:20px;
+}
+
+  th {
+    font-size: 20px;
+    text-decoration: none;
+  }
+  
+ td {
+    padding: 10px;
+    font-size: 16px;
+  }
+}
