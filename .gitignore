@@ -5,6 +5,14 @@
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Agentic Strategy & Identity
+AGENTS.md
+HEARTBEAT.md
+IDENTITY.md
+MARKETING_STRATEGY.md
+SOUL.md
+TOOLS.md
+
 # dependencies
 /frontend/node_modules
 /frontend/node_modules/.cache
