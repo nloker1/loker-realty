@@ -241,7 +241,7 @@
    ========================================= */
 
 .custom-price-marker {
-  background: #006aff;
+  background: #1a5091;
   border: 1px solid white;
   color: white;
   font-weight: 700;
@@ -406,7 +406,7 @@
 }
 
 .view-details-btn {
-  background: #006aff;
+  background: #1a5091;
   color: white;
   border: none;
   padding: 8px;

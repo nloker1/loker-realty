@@ -133,6 +133,16 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+.desktop-only {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .desktop-only {
+        display: inline-flex;
+    }
+}
+
 .filter-pill:hover {
     border-color: #9ca3af;
     background: #f9fafb;
@@ -198,9 +208,154 @@
     pointer-events: auto;
 }
 
+
+    /* ==============================
+       REDFIN-STYLE FILTER MODAL (SIDE PANEL)
+       ============================== */
+
+    /* 1. The dark background overlay */
+    .filter-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 9999; /* Keeps it on top of the map */
+        display: flex;
+        /* Mobile defaults to bottom alignment */
+        align-items: flex-end; 
+        /* Prepares desktop to align to the right */
+        justify-content: flex-end; 
+        animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* 2. The Panel Shell (Mobile First: Full Screen) */
+    .filter-modal-content {
+        background: #fff;
+        width: 100%;
+        height: 100vh; /* Full screen on mobile */
+        display: flex;
+        flex-direction: column;
+        box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+        
+        /* Slide up from the bottom on mobile */
+        animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+
+    /* 3. Header (Sticky Top) */
+    .filter-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid #e2e4e8;
+        background: #fff;
+        margin-top: 75px;
+    }
+
+    .filter-modal-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .filter-modal-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: #6b7280;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0 5px;
+    }
+
+    /* 4. Body (Scrollable Middle) */
+    .filter-modal-body {
+        flex: 1; /* Pushes the footer to the bottom */
+        overflow-y: auto;
+        padding: 24px 20px;
+        -webkit-overflow-scrolling: touch; /* Smooth iOS scrolling */
+    }
+
+    .filter-section {
+        margin-bottom: 28px;
+    }
+
+    .filter-section h4 {
+        margin: 0 0 12px 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+    }
+
+    /* Temporary styling for the dropdowns */
+    .modal-select {
+        width: 100%;
+        height: 48px;
+        padding: 0 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 16px; /* 16px is critical to prevent iOS auto-zoom */
+        background: #fff;
+        color: #1f2937;
+        outline: none;
+    }
+
+    .modal-select:focus {
+        border-color: #006aff;
+    }
+
+    /* 5. Footer (Sticky Bottom) */
+    .filter-modal-footer {
+        display: flex;
+        padding: 16px 20px;
+        border-top: 1px solid #e2e4e8;
+        background: #fff;
+        /* Extra padding for the iPhone swipe bar at the bottom */
+        padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+
+    .modal-apply-btn {
+        background: #1a5091;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 14px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%; /* Big clickable area for thumbs */
+        margin-bottom:50px;
+    }
+
 /* ------- DESKTOP (768px+) ------- */
 
 @media (min-width: 768px) {
+
+    .filter-modal-content {
+        width: 400px; /* Locks it to a side panel */
+        height: 100vh; /* Top to bottom */
+        
+        /* Change the animation to slide in from the right edge */
+        animation: slideLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideLeft {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
 
     .filter-bar {
         padding: 10px 20px;
