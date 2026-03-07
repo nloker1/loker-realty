@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 // Pages
 import Home from './pages/Home';
 import Contact from './pages/Contact';
+import Listings from './pages/Listings';
 import Dashboard from './pages/MarketDashboard';
 import CityMarketHub from './pages/CityMarketHub';
 import Blog from './pages/Blog';
@@ -21,6 +22,7 @@ function App() {
       <div className="App">
         <Routes> {/* Wrap Route components inside Routes */}
           <Route exact path="/" element={<Home />} />
+          <Route path="/properties" element={<Listings />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/map" element={<PropertyMap />} />
           <Route path="/dashboard" element={<Dashboard />} />

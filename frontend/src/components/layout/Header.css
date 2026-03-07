@@ -121,47 +121,114 @@
 }
 /* Mobile Adjustments */
 @media (max-width: 768px) {
+  .App-header {
+    justify-content: space-between;
+    padding: 10px 20px;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 101;
+  }
+
+  .hamburger .bar {
+    width: 2rem;
+    height: 0.25rem;
+    background: #35434a;
+    border-radius: 10px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
+  }
+
+  .hamburger .bar.open:nth-child(1) {
+    transform: rotate(45deg);
+  }
+
+  .hamburger .bar.open:nth-child(2) {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  .hamburger .bar.open:nth-child(3) {
+    transform: rotate(-45deg);
+  }
+
+  .App-header nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #f8f9fa;
+    z-index: 100;
+    padding-top: 80px;
+  }
+
+  .App-header nav.nav-open {
+    display: block;
+  }
+
+  .App-header nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .App-header nav ul li {
-    margin: 0 2px;
+    margin: 15px 0;
   }
   
   .App-header nav > ul > li > a {
-    font-size: 14px;
+    font-size: 24px;
   }
 
   .dropdown-wrapper {
-    font-size: 14px;
-
+    font-size: 24px;
+    text-align: center;
   }
 
   .dropdown-menu {
-    min-width: 120px;
+    position: static;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+    min-width: unset;
   }
 
   .dropdown-menu li > a {
-    font-size: 14px;
-    margin-top: 2px;
-    margin-bottom: 2px;
-
-}
-
+    font-size: 20px;
+    text-align: center;
+  }
 
   .brokerage-info {
-    position: absolute;      /* Removes it from the center flow */
-    right: 1px;             /* Pins it to the far right */
+    position: relative;
+    right: 0;
+    top: 0;
+    transform: none;
   }
 
-  /* The Logo Image */
   .brokerage-info img {
-    height: 15px;            /* adjust based on your preference */
-    width: auto;
-    
+    height: 25px;
   }
   
-  /* On very small screens, you might need to move the text so it doesn't overlap the nav */
   .brokerage-text {
-    font-size: 7px;       /* Make it smaller on mobile */
-    right: 10px;           /* Move it slightly closer to edge */
-    top: 5px;              /* Optional: Move it to the top corner if it overlaps links */
+    font-size: 10px;
+  }
+}
+
+/* Hide hamburger on desktop */
+@media (min-width: 769px) {
+  .hamburger {
+    display: none;
   }
 }
