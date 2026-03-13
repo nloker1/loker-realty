@@ -284,11 +284,16 @@
 /* Placing this BEFORE the media queries ensures overrides work */
 .rmls-logo-overlay {
     position: absolute;
-    bottom: 6px;
-    right: 6px;
+    bottom: 8px;
+    left: 8px;       /* Changed from right to left */
     z-index: 10;
-    width: auto;     /* Natural width */
-    height: 20px;    /* Base height (Desktop default) */
+    width: auto;
+    height: 18px !important;    /* Smaller height (was 18px) */
+    max-width: 40px; /* Smaller max-width (was 60px) */
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    pointer-events: none;
 }
 
 /* B. MOBILE LAYOUT (Bottom Sheet) - Screens < 768px */
@@ -315,13 +320,25 @@
     }
 
   /* Mobile Inner Layout */
-  .card-image-wrapper { width: 38%; }
+  .card-image-wrapper { 
+    width: 38%; 
+    height: 100%; /* Added: Ensure wrapper fills card height */
+    position: relative; /* Added: Re-enforce for absolute children */
+  }
+  
+  .card-image-wrapper .main-property-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block; /* Added: Remove inline whitespace */
+  }
   
   /* THIS WILL NOW WORK (Because it comes AFTER the base style above) */
   .rmls-logo-overlay {
-        bottom: 4px;
-        right: 4px;
-        height: 16px; 
+        bottom: 6px;
+        left: 6px;    /* Changed from right to left */
+        height: 10px; /* Even smaller for mobile */
+        max-width: 35px;
     }
     
   .card-content {
@@ -396,7 +413,7 @@
 
 .card-badge {
   position: absolute;
-  bottom: 6px; left: 6px;
+  top: 6px; left: 6px; /* Moved from bottom to top */
   background: #28a745;
   color: white;
   font-size: 10px;
