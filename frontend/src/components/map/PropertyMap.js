@@ -1,9 +1,9 @@
 // ==========================================
 // 1. IMPORTS
 // ==========================================
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './PropertyMap.css';
@@ -62,6 +62,8 @@ const buildApiUrl = (baseUrl, filters = {}) => {
     if (filters.maxPrice) params.append('max_price', filters.maxPrice);
     if (filters.minSqft) params.append('min_sqft', filters.minSqft);
     if (filters.maxSqft) params.append('max_sqft', filters.maxSqft);
+    if (filters.minAcres) params.append('min_acres', filters.minAcres);
+    if (filters.maxAcres) params.append('max_acres', filters.maxAcres);
 
     const queryString = params.toString();
     return queryString ? `${baseUrl}?${queryString}` : baseUrl;
@@ -75,6 +77,24 @@ const PropertyMap = () => {
   const [loading, setLoading] = useState(true);
   const [selectedListing, setSelectedListing] = useState(null);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Convert searchParams back to a filters object for convenience
+  const currentFilters = useMemo(() => {
+      const filters = { status: searchParams.get('status') || 'Active' };
+      if (searchParams.get('search')) filters.search = searchParams.get('search');
+      if (searchParams.getAll('cities').length > 0) filters.cities = searchParams.getAll('cities');
+      if (searchParams.get('property_type')) filters.propertyType = searchParams.get('property_type');
+      if (searchParams.get('min_beds')) filters.minBeds = searchParams.get('min_beds');
+      if (searchParams.get('min_baths')) filters.minBaths = searchParams.get('min_baths');
+      if (searchParams.get('min_price')) filters.minPrice = searchParams.get('min_price');
+      if (searchParams.get('max_price')) filters.maxPrice = searchParams.get('max_price');
+      if (searchParams.get('min_sqft')) filters.minSqft = searchParams.get('min_sqft');
+      if (searchParams.get('max_sqft')) filters.maxSqft = searchParams.get('max_sqft');
+      if (searchParams.get('min_acres')) filters.minAcres = searchParams.get('min_acres');
+      if (searchParams.get('max_acres')) filters.maxAcres = searchParams.get('max_acres');
+      return filters;
+  }, [searchParams]);
 
   const isLocal = window.location.hostname === 'localhost';
   const apiBase = isLocal ? 'http://localhost:8000/api/listings' : '/api/listings';
@@ -101,16 +121,34 @@ const PropertyMap = () => {
       });
   }, [apiBase]);
 
-  // Initial load
+  // Initial load AND whenever URL search params change
   useEffect(() => {
-    fetchListings({ status: 'Active' });
-  }, [fetchListings]);
+    fetchListings(currentFilters);
+  }, [fetchListings, currentFilters]);
 
   // ==========================================
   // 7. FILTER HANDLER
   // ==========================================
   const handleSearch = (filters) => {
-    fetchListings(filters);
+      // Sync UI filters back to URL
+      const newParams = new URLSearchParams();
+      if (filters.status) newParams.set('status', filters.status);
+      if (filters.search) newParams.set('search', filters.search);
+      if (filters.cities && Array.isArray(filters.cities)) {
+          filters.cities.forEach(city => newParams.append('cities', city));
+      }
+      if (filters.propertyType) newParams.set('property_type', filters.propertyType);
+      if (filters.minBeds) newParams.set('min_beds', filters.minBeds);
+      if (filters.minBaths) newParams.set('min_baths', filters.minBaths);
+      if (filters.minPrice) newParams.set('min_price', filters.minPrice);
+      if (filters.maxPrice) newParams.set('max_price', filters.maxPrice);
+      if (filters.minSqft) newParams.set('min_sqft', filters.minSqft);
+      if (filters.maxSqft) newParams.set('max_sqft', filters.maxSqft);
+      if (filters.minAcres) newParams.set('min_acres', filters.minAcres);
+      if (filters.maxAcres) newParams.set('max_acres', filters.maxAcres);
+      
+      setSearchParams(newParams);
+      // fetchListings(filters); // No need to fetch manually, useEffect above will trigger on searchParams change
   };
 
   return (
@@ -124,6 +162,7 @@ const PropertyMap = () => {
         onSearch={handleSearch}
         resultCount={loading ? undefined : listings.length}
         loading={loading}
+        initialFilters={currentFilters}
       />
 
       {/* THE MAP */}

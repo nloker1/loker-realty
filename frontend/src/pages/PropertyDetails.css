@@ -97,7 +97,10 @@
     .lightbox-close-fixed {
         top: 15px;
         right: 15px;
-        font-size: 14px;
+        font-size: 16px;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 10px 20px;
+        border-radius: 30px;
     }
 }
 
@@ -147,17 +150,21 @@
         display: none; /* Often cleaner to hide the text on mobile and just show logo */
     }
 }
-.back-link {
+.back-link, .back-link-btn {
     text-decoration: none;
     color: #1a5091;
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     display: inline-flex;
     align-items: center;
     padding: 10px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
 }
 
-.back-link:hover { text-decoration: underline; }
+.back-link:hover, .back-link-btn:hover { text-decoration: underline; }
 
 .listing-header { margin-bottom: 24px; }
 
@@ -183,14 +190,18 @@
     border-radius: 4px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: white;
+    background: #28a745;
     border: 1px solid #d1d1d5;
     color: #2a2a33;
     flex-shrink: 0;
 }
 
 /* Status Colors */
-.status-badge.active { border-color: #28a745; color: #28a745; background: #e8f5e9; }
+.status-badge.active { 
+    background-color: #28a745; 
+    color: white; 
+    border-color: #28a745; 
+}
 .status-badge.pending { border-color: #ffc107; color: #856404; background: #fff3cd; }
 
 .header-address h2 {
@@ -210,9 +221,9 @@
 
 .main-media-container {
     width: 100%;
-    aspect-ratio: 16 / 9; /* Mobile default */
+    aspect-ratio: 4 / 3; /* Better for mobile real estate photos */
     background: #f0f2f5;
-    padding: 0 16px;
+    padding: 0; /* Remove padding to go edge-to-edge */
     overflow: hidden;
     position: relative;
 }
@@ -220,7 +231,10 @@
 .main-hero-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Forces the image to fill the container, cropping if necessary */
+    object-position: center;
+    display: block;
+    background-color: #000;
     transition: opacity 0.2s ease-in-out;
 }
 
@@ -367,116 +381,99 @@
 }
 
 /* =========================================
-   6. CONTACT CARD & BUTTONS
+   6. MAP SECTION & MARKER
    ========================================= */
-.sticky-contact-card {
+.map-section-sticky {
     background: white;
     border: 1px solid #d1d1d5;
     border-radius: 8px;
-    padding: 28px 24px;
+    padding: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.card-header {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.agent-headshot {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 12px;
-    border: 2px solid #e5e5e5;
-    object-position: 50% 25%;
-}
-
-.card-header h3 {
-    margin: 0;
-    color: #2a2a33;
+.map-section-sticky h3 {
     font-size: 20px;
-    font-weight: 700;
-}
-
-.agent-subtitle {
-    margin: 4px 0 0 0;
-    color: #596b82;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.primary-btn {
-    width: 100%;
-    background-color: #1a5091;
-    color: white;
-    font-weight: 700;
-    padding: 12px;
-    border: none;
-    border-radius: 4px;
     margin-bottom: 12px;
-    cursor: pointer;
-    font-size: 16px;
-}
-.primary-btn:hover { background-color: #143d6e; }
-
-.secondary-btn {
-    width: 100%;
-    background-color: white;
-    color: #1a5091;
-    border: 1px solid #1a5091;
-    padding: 12px;
-    font-weight: 700;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-/* Contact links styled as buttons */
-.contact-link {
-    display: block;
-    text-align: center;
-    text-decoration: none;
-    box-sizing: border-box;
-}
-
-.contact-phone-display {
-    text-align: center;
     color: #2a2a33;
-    font-size: 18px;
-    font-weight: 600;
-    margin-top: 16px;
-    margin-bottom: 0;
-    letter-spacing: 0.5px;
 }
 
-.agent-info {
-    font-size: 16px; /* Slightly reduced for better fit */
-    color: #666;
-    text-align: left;
-    margin-top: 16px;
+.mini-map-container {
+    height: 300px; /* Fixed height for the map */
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #e5e5e5;
 }
 
-.broker-name {
-    font-weight: 700;
-    color: #333;
-    margin: 4px 0;
+.detail-leaflet-container {
+    height: 100%;
+    width: 100%;
+    z-index: 1;
 }
 
-.compliance-logo-source {
-    height: 18px;
-    width: auto;
-    display: block;
+.map-placeholder {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f2f5;
+    color: #596b82;
+    text-align: center;
+    padding: 20px;
+}
+
+.map-address-footer {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #2a2a33;
+}
+
+.map-address-footer p {
+    margin: 2px 0;
+}
+
+/* Custom Marker Pin */
+.marker-pin {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    background: #1a5091;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.marker-pin::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    margin: 10px 0 0 10px;
+    background: white;
+    position: absolute;
+    border-radius: 50%;
 }
 
 /* =========================================
    7. COMPLIANCE & FOOTER
    ========================================= */
-/* The row inside the agent card */
+/* The row inside the agent attribution */
 .source-row {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-top: 8px;
+}
+
+.compliance-logo-source {
+    height: 18px;
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .compliance-logo-small {
@@ -489,33 +486,40 @@
 .compliance-footer-inline {
     margin-top: 40px;
     background: #f9f9fb;
-    padding: 16px;
+    padding: 24px;
     border-radius: 8px;
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 16px;
+    border: 1px solid #e5e5e5;
 }
 
 .compliance-tiny {
-    font-size: 14px;
-    color: #888;
+    font-size: 13px;
+    color: #666;
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 /* =========================================
    8. DESKTOP OVERRIDES (Min-Width 900px)
    ========================================= */
 @media (min-width: 900px) {
+    /* Hide the mobile map on desktop */
+    .mobile-only-map {
+        display: none;
+    }
+
     /* Main Layout - 2 Columns */
     .zillow-layout-grid {
         display: grid;
         grid-template-columns: 2fr 1fr; /* 2/3 Content, 1/3 Sidebar */
+        gap: 40px;
         align-items: start;
     }
 
-    /* Sticky Sidebar */
-    .sticky-contact-card {
+    /* Sticky Sidebar Map */
+    .map-section-sticky {
         position: sticky;
         top: 24px;
     }
@@ -523,22 +527,67 @@
     /* Media Container Fixed Height */
     .main-media-container {
         aspect-ratio: auto;
-        height: 550px;
-        
-        /* 1. MATCH THE WIDTH BELOW */
+        height: 600px;
         max-width: 1100px; 
-        
-        /* 2. CENTER IT */
         margin-left: auto;
         margin-right: auto;
-        
-        /* 3. OPTIONAL POLISH */
-        border-radius: 8px; /* Adds rounded corners since it's no longer edge-to-edge */
+        border-radius: 8px; 
     }
 
     /* Larger Thumbnails */
     .thumb-item {
         width: 120px;
         height: 90px;
+    }
+
+    .compliance-footer-inline {
+        padding: 32px;
+    }
+}
+
+/* =========================================
+   9. MOBILE OPTIMIZATION
+   ========================================= */
+@media (max-width: 899px) {
+    /* Hide the sidebar map on mobile */
+    .right-column {
+        display: none;
+    }
+
+    /* Edge-to-edge media on mobile */
+    .media-section {
+        margin-left: -12px;
+        margin-right: -12px;
+    }
+
+    .main-media-container {
+        border-radius: 0;
+    }
+
+    .details-container {
+        padding: 0 12px;
+    }
+
+    .price-main {
+        font-size: 24px;
+    }
+
+    .section-block h3 {
+        font-size: 24px;
+    }
+
+    .facts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mini-map-container {
+        height: 250px;
+    }
+
+    .compliance-footer-inline {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 40px;
     }
 }

@@ -1,14 +1,37 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import './PropertyDetails.css';
 
 const MAX_THUMBS = 30;
 
+// Custom Marker for the Map
+const icon = L.divIcon({
+    className: 'property-marker',
+    html: `<div class="marker-pin"></div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+});
+
 const API_BASE = process.env.REACT_APP_API_BASE
     || (window.location.hostname === 'localhost' ? 'http://localhost:8000/api/listings' : '/api/listings');
 
+// Helper to format PascalCase/camelCase strings into "Spaced Words"
+const formatPascalCase = (str) => {
+    if (!str) return '';
+    // 1. Special case: "minisplit" (handle common source typo)
+    let formatted = str.replace(/minisplit/gi, 'Mini Split');
+    // 2. Insert spaces before capital letters (e.g., SharedWell -> Shared Well)
+    // but not at the start of the string.
+    formatted = formatted.replace(/([a-z])([A-Z])/g, '$1 $2');
+    return formatted;
+};
+
 const PropertyDetails = () => {
     const { mls_number } = useParams();
+    const navigate = useNavigate(); // Add navigate
     const [listing, setListing] = useState(null);
     const [mainImage, setMainImage] = useState('');
     const [loading, setLoading] = useState(true);
@@ -170,8 +193,8 @@ const PropertyDetails = () => {
     }, [isLightboxOpen, handleNext, handlePrev]);
 
     if (loading) return <div className="loading-state">Loading Property Details...</div>;
-    if (error === 'not_found') return <div className="error-state">Property not found. <Link to="/map">Return to Map</Link></div>;
-    if (error || !listing) return <div className="error-state">Something went wrong loading this property. <Link to="/map">Return to Map</Link></div>;
+    if (error === 'not_found') return <div className="error-state">Property not found. <button className="back-link-btn" onClick={() => navigate('/map')}>Return to Map</button></div>;
+    if (error || !listing) return <div className="error-state">Something went wrong loading this property. <button className="back-link-btn" onClick={() => navigate('/map')}>Return to Map</button></div>;
 
     const priceFormatted = listing.price?.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
@@ -207,7 +230,7 @@ const PropertyDetails = () => {
                 {/* Added 'details-nav-flex' class to handle the layout */}
                 <div className="details-container details-nav-flex">
                     
-                    <Link to="/map" className="back-link">← Back to Map</Link>
+                    <button className="back-link-btn" onClick={() => navigate(-1)}>← Back to Map</button>
                     
                     {/* RIGHT SIDE: Branding Group */}
                     <div className="nav-branding">
@@ -315,7 +338,7 @@ const PropertyDetails = () => {
                         <div className="section-block">
                             <h3>Facts & Features</h3>
                             <div className="facts-grid">
-                                <div className="fact-row"><span>Type:</span> <strong>{listing.property_type}</strong></div>
+                                <div className="fact-row"><span>Type:</span> <strong>{formatPascalCase(listing.property_type)}</strong></div>
                                 <div className="fact-row"><span>Year Built:</span> <strong>{listing.year_built}</strong></div>
                                 <div className="fact-row"><span>Lot Size:</span> <strong>{listing.acreage || 'N/A'} Acres</strong></div>
                                 <div className="fact-row"><span>MLS #:</span> <strong>{listing.mls_number}</strong></div>
@@ -323,6 +346,52 @@ const PropertyDetails = () => {
                         </div>
 
                         <div className="divider"></div>
+
+                        {/* Utilities & Systems */}
+                        <div className="section-block">
+                            <h3>Utilities & Systems</h3>
+                            <div className="facts-grid">
+                                {listing.cooling && <div className="fact-row"><span>Cooling:</span> <strong>{formatPascalCase(listing.cooling)}</strong></div>}
+                                {listing.heating && <div className="fact-row"><span>Heating:</span> <strong>{formatPascalCase(listing.heating)}</strong></div>}
+                                {listing.fuel_description && <div className="fact-row"><span>Fuel:</span> <strong>{formatPascalCase(listing.fuel_description)}</strong></div>}
+                                {listing.roof && <div className="fact-row"><span>Roof:</span> <strong>{formatPascalCase(listing.roof)}</strong></div>}
+                                {listing.sewer && <div className="fact-row"><span>Sewer:</span> <strong>{formatPascalCase(listing.sewer)}</strong></div>}
+                                {listing.water_source && <div className="fact-row"><span>Water:</span> <strong>{formatPascalCase(listing.water_source)}</strong></div>}
+                                {listing.utilities && <div className="fact-row"><span>Utilities:</span> <strong>{formatPascalCase(listing.utilities)}</strong></div>}
+                            </div>
+                        </div>
+
+                        <div className="divider"></div>
+
+                        {/* Map Section for Mobile (only visible on mobile) */}
+                        <div className="section-block mobile-only-map">
+                            <h3>Location</h3>
+                            <div className="mini-map-container">
+                                {listing.lat && listing.lon ? (
+                                    <MapContainer 
+                                        center={[listing.lat, listing.lon]} 
+                                        zoom={14} 
+                                        scrollWheelZoom={false}
+                                        className="detail-leaflet-container"
+                                    >
+                                        <TileLayer
+                                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                        />
+                                        <Marker position={[listing.lat, listing.lon]} icon={icon} />
+                                    </MapContainer>
+                                ) : (
+                                    <div className="map-placeholder">
+                                        Map location unavailable for this property.
+                                    </div>
+                                )}
+                            </div>
+                            <div className="map-address-footer">
+                                <p><strong>{listing.is_address_exposed ? listing.address : 'Undisclosed Address'}</strong></p>
+                                <p>{listing.city}, {listing.state} {listing.zipcode}</p>
+                            </div>
+                            <div className="divider"></div>
+                        </div>
 
                         <div className="listing-attribution">
                             <div className="agent-info">
@@ -334,58 +403,61 @@ const PropertyDetails = () => {
                             </div>
                         </div>
 
-
-
-                        {/* --- RESTORED COMPLIANCE FOOTER --- */}
-                        <footer className="compliance-footer-inline">
-                            <img src="/rmls_logo.jpg" alt="RMLS Logo" className="compliance-logo-small" /> 
-                            <div className="compliance-text-block">
-                                <p className="compliance-tiny">
-                                    The content relating to real estate for sale on this web site comes in part from the 
-                                    IDX program of the RMLS™ of Portland, Oregon. Real estate listings held by brokerage 
-                                    firms other than Real Broker, LLC are marked with the RMLS™ logo, 
-                                    and detailed information about these properties includes the names of the listing brokers.
-                                    Listing content is copyright © 2026 RMLS™, Portland, Oregon. 
-                                    IDX content is updated approximately every two hours. Some properties which appear 
-                                    for sale on this web site may subsequently have sold or may no longer be available. 
-                                    All information provided is deemed reliable but is not guaranteed and should be 
-                                    independently verified.
-                                </p>
-                                <p className="compliance-tiny">
-                                    <strong>Last Updated:</strong> {listing.last_updated ? new Date(listing.last_updated).toLocaleString() : 'N/A'}
-                                </p>
-                            </div>
-                        </footer>
-
                     </div>
 
-                    {/* --- RIGHT COLUMN (Sticky) --- */}
+                    {/* --- RIGHT COLUMN (Sticky Map) --- */}
                     <aside className="right-column">
-                        <div className="sticky-contact-card">
-                            <div className="card-header">
-                                <img src="/head_shot.jpg" alt="Nate Loker" className="agent-headshot" />
-                                <h3>Nate Loker</h3>
-                                <p className="agent-subtitle">Real Broker, LLC</p>
+                        <div className="map-section-sticky">
+                            <h3>Property Location</h3>
+                            <div className="mini-map-container">
+                                {listing.lat && listing.lon ? (
+                                    <MapContainer 
+                                        center={[listing.lat, listing.lon]} 
+                                        zoom={14} 
+                                        scrollWheelZoom={false}
+                                        className="detail-leaflet-container"
+                                    >
+                                        <TileLayer
+                                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                        />
+                                        <Marker position={[listing.lat, listing.lon]} icon={icon} />
+                                    </MapContainer>
+                                ) : (
+                                    <div className="map-placeholder">
+                                        Map location unavailable for this property.
+                                    </div>
+                                )}
                             </div>
-                            
-                            <div className="contact-form">
-                                <a href="tel:+15413997756" className="primary-btn contact-link">
-                                    📞 Call to Schedule
-                                </a>
-                                <a 
-                                    href={`sms:+15413997756?body=${encodeURIComponent(`Hi Nate, I'm interested in scheduling a showing for the property at ${listing.is_address_exposed ? listing.address : `MLS# ${listing.mls_number}`}. When are you available?`)}`} 
-                                    className="secondary-btn contact-link"
-                                >
-                                    💬 Text to Schedule
-                                </a>
-                                <p className="contact-phone-display">(541) 399-7756</p>
+                            <div className="map-address-footer">
+                                <p><strong>{listing.is_address_exposed ? listing.address : 'Undisclosed Address'}</strong></p>
+                                <p>{listing.city}, {listing.state} {listing.zipcode}</p>
                             </div>
-
- 
                         </div>
                     </aside>
 
                 </div>
+
+                {/* --- RESTORED COMPLIANCE FOOTER --- */}
+                <footer className="compliance-footer-inline">
+                    <img src="/rmls_logo.jpg" alt="RMLS Logo" className="compliance-logo-small" /> 
+                    <div className="compliance-text-block">
+                        <p className="compliance-tiny">
+                            The content relating to real estate for sale on this web site comes in part from the 
+                            IDX program of the RMLS™ of Portland, Oregon. Real estate listings held by brokerage 
+                            firms other than Real Broker, LLC are marked with the RMLS™ logo, 
+                            and detailed information about these properties includes the names of the listing brokers.
+                            Listing content is copyright © 2026 RMLS™, Portland, Oregon. 
+                            IDX content is updated approximately every two hours. Some properties which appear 
+                            for sale on this web site may subsequently have sold or may no longer be available. 
+                            All information provided is deemed reliable but is not guaranteed and should be 
+                            independently verified.
+                        </p>
+                        <p className="compliance-tiny">
+                            <strong>Last Updated:</strong> {listing.last_updated ? new Date(listing.last_updated).toLocaleString() : 'N/A'}
+                        </p>
+                    </div>
+                </footer>
             </main>
         </div>
     );

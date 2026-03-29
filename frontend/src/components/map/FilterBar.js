@@ -1,17 +1,54 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import './FilterBar.css';
 
-const FilterBar = ({ onSearch, resultCount, loading }) => {
-    const [search, setSearch] = useState('');
+const FilterBar = ({ onSearch, resultCount, loading, initialFilters = {} }) => {
+    const [search, setSearch] = useState(initialFilters.search || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activePriceInput, setActivePriceInput] = useState(null);
     const [activeSqftInput, setActiveSqftInput] = useState(null);
-    const [selectedCities, setSelectedCities] = useState([]);
-    const [propertyType, setPropertyType] = useState('');
-    const [minBeds, setMinBeds] = useState('');
-    const [minBaths, setMinBaths] = useState('');
-    const [priceRange, setPriceRange] = useState('');
-    const [sqftRange, setSqftRange] = useState('');
+    const [selectedCities, setSelectedCities] = useState(initialFilters.cities || []);
+    const [propertyType, setPropertyType] = useState(initialFilters.propertyType || '');
+    const [minBeds, setMinBeds] = useState(initialFilters.minBeds || '');
+    const [minBaths, setMinBaths] = useState(initialFilters.minBaths || '');
+    const [priceRange, setPriceRange] = useState(
+        (initialFilters.minPrice || initialFilters.maxPrice) 
+        ? `${initialFilters.minPrice || ''}-${initialFilters.maxPrice || ''}` 
+        : ''
+    );
+    const [sqftRange, setSqftRange] = useState(
+        (initialFilters.minSqft || initialFilters.maxSqft) 
+        ? `${initialFilters.minSqft || ''}-${initialFilters.maxSqft || ''}` 
+        : ''
+    );
+    const [acresRange, setAcresRange] = useState(
+        (initialFilters.minAcres || initialFilters.maxAcres) 
+        ? `${initialFilters.minAcres || ''}-${initialFilters.maxAcres || ''}` 
+        : ''
+    );
+
+    // Update local state if initialFilters changes (e.g. from Browser Back button)
+    useEffect(() => {
+        setSearch(initialFilters.search || '');
+        setSelectedCities(initialFilters.cities || []);
+        setPropertyType(initialFilters.propertyType || '');
+        setMinBeds(initialFilters.minBeds || '');
+        setMinBaths(initialFilters.minBaths || '');
+        setPriceRange(
+            (initialFilters.minPrice || initialFilters.maxPrice) 
+            ? `${initialFilters.minPrice || ''}-${initialFilters.maxPrice || ''}` 
+            : ''
+        );
+        setSqftRange(
+            (initialFilters.minSqft || initialFilters.maxSqft) 
+            ? `${initialFilters.minSqft || ''}-${initialFilters.maxSqft || ''}` 
+            : ''
+        );
+        setAcresRange(
+            (initialFilters.minAcres || initialFilters.maxAcres) 
+            ? `${initialFilters.minAcres || ''}-${initialFilters.maxAcres || ''}` 
+            : ''
+        );
+    }, [initialFilters]);
     const [email, setEmail] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [saveMessage, setSaveMessage] = useState({ type: '', text: '' });
@@ -63,11 +100,12 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
 
     const buildFilters = useCallback((overrides = {}) => {
         const merged = {
-            search, selectedCities, propertyType, minBeds, minBaths, priceRange, sqftRange,
+            search, selectedCities, propertyType, minBeds, minBaths, priceRange, sqftRange, acresRange,
             ...overrides
         };
         const price = parseRange(merged.priceRange);
         const sqft = parseRange(merged.sqftRange);
+        const acres = parseRange(merged.acresRange);
 
         return {
             status: 'Active',
@@ -80,8 +118,10 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
             maxPrice: price.max || undefined,
             minSqft: sqft.min || undefined,
             maxSqft: sqft.max || undefined,
+            minAcres: acres.min || undefined,
+            maxAcres: acres.max || undefined,
         };
-    }, [search, selectedCities, propertyType, minBeds, minBaths, priceRange, sqftRange]);
+    }, [search, selectedCities, propertyType, minBeds, minBaths, priceRange, sqftRange, acresRange]);
 
     // Auto-apply: every dropdown change triggers a fetch
     const handleFilterChange = (setter, key) => (e) => {
@@ -150,7 +190,7 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
     };
 
     // Count active filters for the badge
-    const activeCount = [propertyType, minBeds, minBaths, priceRange, sqftRange, search, ...selectedCities]
+    const activeCount = [propertyType, minBeds, minBaths, priceRange, sqftRange, acresRange, search, ...selectedCities]
         .filter(Boolean).length;
 
     return (
@@ -405,7 +445,7 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
 
                                     {/* --- CUSTOM REACT SQFT DROPDOWN --- */}
                                     <div className="filter-section">
-                                        <h4>Square Feet</h4>
+                                        <h4>Building Square Feet</h4>
                                         <div style={{ position: 'relative' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 
@@ -492,6 +532,41 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
                                     </div>
                                     {/* --- END SQFT FILTER --- */}
 
+                                    {/* --- ACRES FILTER --- */}
+                                    <div className="filter-section">
+                                        <h4>Lot Size (Acres)</h4>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <div style={{ flex: 1 }}>
+                                                <input 
+                                                    type="number" 
+                                                    placeholder="Min Acres"
+                                                    value={acresRange.split('-')[0] || ''}
+                                                    style={{ width: '100%', height: '44px', padding: '0 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '16px', outline: 'none' }}
+                                                    onChange={(e) => {
+                                                        const currentMax = acresRange.split('-')[1] || '';
+                                                        const newRange = `${e.target.value}-${currentMax}`;
+                                                        setAcresRange(newRange === '-' ? '' : newRange);
+                                                    }}
+                                                />
+                                            </div>
+                                            <span style={{ color: '#9ca3af' }}>-</span>
+                                            <div style={{ flex: 1 }}>
+                                                <input 
+                                                    type="number" 
+                                                    placeholder="Max Acres"
+                                                    value={acresRange.split('-')[1] || ''}
+                                                    style={{ width: '100%', height: '44px', padding: '0 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '16px', outline: 'none' }}
+                                                    onChange={(e) => {
+                                                        const currentMin = acresRange.split('-')[0] || '';
+                                                        const newRange = `${currentMin}-${e.target.value}`;
+                                                        setAcresRange(newRange === '-' ? '' : newRange);
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* --- END ACRES FILTER --- */}
+
                                     <div className="filter-section save-alert-section" style={{ marginTop: '24px', paddingTop: '24px', borderTop: '2px solid #f3f4f6' }}>
                                         <h4 style={{ color: '#1a5091', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             Save this Search 🔔
@@ -556,15 +631,14 @@ const FilterBar = ({ onSearch, resultCount, loading }) => {
                             type="button"
                             className="filter-pill filter-pill-clear"
                             onClick={() => {
+                                setSearch('');
+                                setSelectedCities([]);
                                 setPropertyType('');
                                 setMinBeds('');
                                 setMinBaths('');
                                 setPriceRange('');
                                 setSqftRange('');
-                                onSearch({
-                                    status: 'Active',
-                                    search: search || undefined,
-                                });
+                                onSearch({ status: 'Active' });
                             }}
                         >
                             <span className="filter-pill-label">Clear All</span>
