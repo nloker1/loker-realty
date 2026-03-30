@@ -302,8 +302,8 @@ const PropertyDetails = () => {
                         <div className="listing-header">
                             <div className="price-status-row">
                                 <h1 className="price-main">{priceFormatted}</h1>
-                                <span className={`status-badge ${listing.internal_status?.toLowerCase()}`}>
-                                    {listing.internal_status || 'Active'}
+                                <span className={`status-badge ${(listing.status || listing.internal_status)?.toLowerCase()}`}>
+                                    {listing.status || listing.internal_status || 'Active'}
                                 </span>
                             </div>
                         <div className="header-address">

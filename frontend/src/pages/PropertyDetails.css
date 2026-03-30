@@ -202,7 +202,16 @@
     color: white; 
     border-color: #28a745; 
 }
-.status-badge.pending { border-color: #ffc107; color: #856404; background: #fff3cd; }
+.status-badge.pending { 
+    background-color: #ffc107; 
+    color: #000; 
+    border-color: #ffc107; 
+}
+.status-badge.sold { 
+    background-color: #dc3545; 
+    color: white; 
+    border-color: #dc3545; 
+}
 
 .header-address h2 {
     font-size: 16px;
