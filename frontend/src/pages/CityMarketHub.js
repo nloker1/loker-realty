@@ -34,6 +34,8 @@ const CityMarketHub = () => {
   const [topRealtors, setTopRealtors] = useState([]);
   const [trendData, setTrendData] = useState([]); 
   const [recentListings, setRecentListings] = useState([]);
+  const [recentlySold, setRecentlySold] = useState([]);
+  const [recentlyPending, setRecentlyPending] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -67,6 +69,8 @@ const CityMarketHub = () => {
         setTrendData(data.trendData);
         setTopRealtors(data.topRealtors);
         setRecentListings(data.recentListings || []);
+        setRecentlySold(data.recentlySold || []);
+        setRecentlyPending(data.recentlyPending || []);
         
       } catch (err) {
         console.error("Failed to fetch market data", err);
@@ -177,6 +181,108 @@ const CityMarketHub = () => {
             ))
           ) : (
             <div className="no-recent">No new listings in the last 30 days.</div>
+          )}
+        </div>
+      </section>
+
+      {/* SECTION 2.6: RECENTLY PENDING */}
+      <section className="hub-section">
+        <h2 className="section-title">Under Contract in {cityName}</h2>
+        <p className="section-description">
+          Properties that have accepted an offer in the last 30 days.
+        </p>
+        
+        <div className="recent-listings-vertical">
+          {recentlyPending.length > 0 ? (
+            recentlyPending.map((listing) => (
+              <Link 
+                to={`/property/${listing.address_slug}/${listing.mls_number}`} 
+                key={listing.mls_number} 
+                className="recent-listing-row"
+              >
+                <div className="row-image-wrapper">
+                  <img 
+                    src={listing.photo_url || '/api/placeholder/400/300'} 
+                    alt={listing.address} 
+                    className="row-image"
+                  />
+                  <div className={`status-badge-mini badge-${listing.status.toLowerCase()}`}>
+                    {listing.status}
+                  </div>
+                </div>
+                <div className="row-content">
+                  <div className="row-main">
+                    <div className="row-price">
+                      ${listing.price.toLocaleString()}
+                    </div>
+                    <div className="row-address">
+                      {listing.address}
+                    </div>
+                  </div>
+                  <div className="row-details">
+                    <span className="row-stats">
+                      {listing.beds} bds | {listing.baths} ba | {listing.sqft} sqft
+                    </span>
+                    <span className="row-dom">
+                      {listing.dom} Days on Market
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <div className="no-recent">No properties went pending in the last 30 days.</div>
+          )}
+        </div>
+      </section>
+
+      {/* SECTION 2.5: RECENTLY SOLD */}
+      <section className="hub-section">
+        <h2 className="section-title">Recently Sold in {cityName}</h2>
+        <p className="section-description">
+          Properties that have successfully closed in the last 30 days.
+        </p>
+        
+        <div className="recent-listings-vertical">
+          {recentlySold.length > 0 ? (
+            recentlySold.map((listing) => (
+              <Link 
+                to={`/property/${listing.address_slug}/${listing.mls_number}`} 
+                key={listing.mls_number} 
+                className="recent-listing-row"
+              >
+                <div className="row-image-wrapper">
+                  <img 
+                    src={listing.photo_url || '/api/placeholder/400/300'} 
+                    alt={listing.address} 
+                    className="row-image"
+                  />
+                  <div className={`status-badge-mini badge-${listing.status.toLowerCase()}`}>
+                    {listing.status}
+                  </div>
+                </div>
+                <div className="row-content">
+                  <div className="row-main">
+                    <div className="row-price">
+                      ${listing.price.toLocaleString()}
+                    </div>
+                    <div className="row-address">
+                      {listing.address}
+                    </div>
+                  </div>
+                  <div className="row-details">
+                    <span className="row-stats">
+                      {listing.beds} bds | {listing.baths} ba | {listing.sqft} sqft
+                    </span>
+                    <span className="row-dom">
+                      Sold on {listing.close_date}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <div className="no-recent">No properties sold in the last 30 days.</div>
           )}
         </div>
       </section>

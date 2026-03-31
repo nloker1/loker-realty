@@ -139,6 +139,24 @@
   border-radius: 10px;
 }
 
+@media (min-width: 1024px) {
+  .recent-listings-vertical {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    max-height: none;
+    overflow-y: visible;
+    gap: 1.25rem;
+  }
+
+  .recent-listing-row {
+    height: 120px;
+  }
+
+  .row-image-wrapper {
+    width: 160px;
+  }
+}
+
 .recent-listing-row {
   display: flex;
   background: white;
@@ -196,9 +214,10 @@
 
 .row-main {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 0.125rem;
 }
 
 .row-price {
@@ -213,7 +232,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: right;
+  text-align: left;
 }
 
 .row-details {
@@ -371,5 +390,12 @@
 
   .agent-name {
     margin-bottom: 0;
+  }
+
+  /* Desktop Stats Placement */
+  .realtor-stats-row {
+    justify-content: flex-start;
+    gap: 1.5rem;
+    margin-left: 2rem;
   }
 }
