@@ -198,6 +198,26 @@ const PropertyDetails = () => {
 
     const priceFormatted = listing.price?.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
+    const handleShare = async () => {
+        const shareData = {
+            title: document.title,
+            text: `Check out this listing on Gorge Realty: ${listing.address}`,
+            url: window.location.href,
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.error("Error sharing:", err);
+            }
+        } else {
+            // Fallback: Copy to clipboard
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied to clipboard!");
+        }
+    };
+
     return (
         <div className="details-page">
             {/* --- LIGHTBOX OVERLAY --- */}
@@ -302,9 +322,14 @@ const PropertyDetails = () => {
                         <div className="listing-header">
                             <div className="price-status-row">
                                 <h1 className="price-main">{priceFormatted}</h1>
-                                <span className={`status-badge ${(listing.status || listing.internal_status)?.toLowerCase()}`}>
-                                    {listing.status || listing.internal_status || 'Active'}
-                                </span>
+                                <div className="header-actions">
+                                    <button className="share-btn" onClick={handleShare} aria-label="Share property">
+                                        <span className="share-icon">📤</span> Share
+                                    </button>
+                                    <span className={`status-badge ${(listing.status || listing.internal_status)?.toLowerCase()}`}>
+                                        {listing.status || listing.internal_status || 'Active'}
+                                    </span>
+                                </div>
                             </div>
                         <div className="header-address">
                             <h2>

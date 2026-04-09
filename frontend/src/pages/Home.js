@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import Usp from '../components/marketing/Usp';
 import UspPackages from "../components/marketing/UspPackages"; 
 import SoldTestimonialToggle from '../components/marketing/SoldTestimonialToggle';
 
-import Popup from '../components/shared/Popup'; // Import the pop-up component
+import Popup from '../components/Popup'; // Import the pop-up component
 import './Home.css'; 
 
 const Home = () => {

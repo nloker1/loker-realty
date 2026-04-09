@@ -9,7 +9,7 @@ import 'leaflet/dist/leaflet.css';
 import './PropertyMap.css';
 
 import FilterBar from './FilterBar';
-import Header from '../../components/layout/Header';
+import Header from '../../components/Header';
 import { createSlug } from '../../utils/slugify';
 
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import rehypeRaw from 'rehype-raw'; // ✅ Import rehypeRaw to allow raw HTML
+import rehypeRaw from 'rehype-raw';
+import Header from '../components/Header';
 import '../markdown.css';
 
 const BlogPost = () => {
@@ -15,11 +16,14 @@ const BlogPost = () => {
   }, [id]);
 
   return (
-    <div className="blog-post-content">
-      <ReactMarkdown className="markdown" rehypePlugins={[rehypeRaw]}>
-        {postContent}
-      </ReactMarkdown>
-    </div>
+    <>
+      <Header />
+      <div className="blog-post-content">
+        <ReactMarkdown className="markdown" rehypePlugins={[rehypeRaw]}>
+          {postContent}
+        </ReactMarkdown>
+      </div>
+    </>
   );
 };
 

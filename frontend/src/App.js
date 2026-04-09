@@ -12,8 +12,8 @@ import PropertyDetails from './pages/PropertyDetails';
 import PropertyMap from './components/map/PropertyMap';
 
 // Components
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
+import Header from './components/Header';
+import Footer from './components/Footer';
 import './App.css'; // Temporarily commented out for troubleshooting
 
 function App() {

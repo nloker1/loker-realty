@@ -120,7 +120,7 @@
   white-space: nowrap;
 }
 /* Mobile Adjustments */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .App-header {
     justify-content: space-between;
     padding: 20px;
@@ -227,8 +227,16 @@
 }
 
 /* Hide hamburger on desktop */
-@media (min-width: 769px) {
+@media (min-width: 1025px) {
   .hamburger {
     display: none;
+  }
+  
+  /* Slightly smaller font for large tablets/small laptops to prevent overlap */
+  @media (max-width: 1280px) {
+    .App-header nav > ul > li > a,
+    .dropdown-wrapper {
+        font-size: 24px;
+    }
   }
 }

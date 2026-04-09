@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts';
-import Header from '../components/layout/Header';
+import Header from '../components/Header';
 import './CityMarketHub.css'; 
 
 // --- 1. CUSTOM TOOLTIP COMPONENT ---

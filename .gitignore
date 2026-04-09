@@ -1,4 +1,5 @@
-# Environment variables
+frontend/build/# Environment variables
+.env.production.local
 .env
 .env.development
 .env.production
@@ -25,7 +26,7 @@ TOOLS.md
 /coverage
 
 # production
-/build
+frontend/build/
 
 # misc
 .DS_Store
