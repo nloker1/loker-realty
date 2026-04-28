@@ -38,6 +38,11 @@ const Header = () => {
                 <li><Link to="/market/hood-river" onClick={() => setIsMobileMenuOpen(false)}>Hood River</Link></li>
                 <li><Link to="/market/white-salmon" onClick={() => setIsMobileMenuOpen(false)}>White Salmon</Link></li>
                 <li><Link to="/market/the-dalles" onClick={() => setIsMobileMenuOpen(false)}>The Dalles</Link></li>
+                <li><Link to="/market/lyle-high-prairie" onClick={() => setIsMobileMenuOpen(false)}>Lyle / High Prairie</Link></li>
+                <li><Link to="/market/carson-stevenson" onClick={() => setIsMobileMenuOpen(false)}>Carson / Stevenson</Link></li>
+                <li><Link to="/market/underwood" onClick={() => setIsMobileMenuOpen(false)}>Underwood</Link></li>
+                <li><Link to="/market/trout-lake" onClick={() => setIsMobileMenuOpen(false)}>Trout Lake</Link></li>
+                <li><Link to="/market/mosier" onClick={() => setIsMobileMenuOpen(false)}>Mosier</Link></li>
               </ul>
             )}
           </li>
