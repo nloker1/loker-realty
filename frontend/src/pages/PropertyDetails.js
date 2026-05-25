@@ -32,6 +32,15 @@ const formatPascalCase = (str) => {
 const PropertyDetails = () => {
     const { mls_number } = useParams();
     const navigate = useNavigate(); // Add navigate
+
+    const handleBackClick = () => {
+        if (window.history.state && window.history.state.idx > 0) {
+            navigate(-1);
+        } else {
+            navigate('/map'); // Fallback if opened directly from email/link
+        }
+    };
+
     const [listing, setListing] = useState(null);
     const [mainImage, setMainImage] = useState('');
     const [loading, setLoading] = useState(true);
@@ -250,7 +259,7 @@ const PropertyDetails = () => {
                 {/* Added 'details-nav-flex' class to handle the layout */}
                 <div className="details-container details-nav-flex">
                     
-                    <button className="back-link-btn" onClick={() => navigate(-1)}>← Back to Map</button>
+                    <button className="back-link-btn" onClick={handleBackClick}>← Back to Map</button>
                     
                     {/* RIGHT SIDE: Branding Group */}
                     <div className="nav-branding">
