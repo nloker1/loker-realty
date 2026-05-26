@@ -4,6 +4,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts';
 import Header from '../components/Header';
+import AlertSubscribeButton from '../components/AlertSubscribeButton';
 import './CityMarketHub.css'; 
 
 // --- 1. CUSTOM TOOLTIP COMPONENT ---
@@ -103,9 +104,15 @@ const CityMarketHub = () => {
     <article className="hub-container">
       <header className="hub-header">
         <h1 className="hub-title text-center">{cityName} Analytics Hub</h1>
-        <p className="hub-subtitle text-center">
-            Live real estate analytics for {cityName}. 
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px', marginBottom: '10px' }}>
+            <div style={{ transform: 'scale(1.2)' }}>
+                <AlertSubscribeButton 
+                    alertType="market" 
+                    targetId={cityName} 
+                    buttonText={`📈 Get ${cityName} Market Updates`} 
+                />
+            </div>
+        </div>
       </header>
 
       {/* SECTION 1: MARKET STATS */}

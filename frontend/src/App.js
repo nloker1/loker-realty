@@ -9,6 +9,7 @@ import CityMarketHub from './pages/CityMarketHub';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import PropertyDetails from './pages/PropertyDetails';
+import Unsubscribe from './pages/Unsubscribe';
 import PropertyMap from './components/map/PropertyMap';
 
 // Components
@@ -29,7 +30,9 @@ function App() {
           <Route path="/market/:cityId" element={<CityMarketHub />} />  
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog-posts/:id" element={<BlogPost />} /> {/* Route for individual blog posts */}
-          <Route path="/property/:slug/:mls_number" element={<PropertyDetails />} />          {/* other routes */}
+          <Route path="/property/:slug/:mls_number" element={<PropertyDetails />} />
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
+          {/* other routes */}
         </Routes>
       </div>
     </Router>

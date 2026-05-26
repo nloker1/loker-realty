@@ -5,6 +5,8 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './PropertyDetails.css';
 
+import AlertSubscribeButton from '../components/AlertSubscribeButton';
+
 const MAX_THUMBS = 30;
 
 // Custom Marker for the Map
@@ -332,6 +334,13 @@ const PropertyDetails = () => {
                             <div className="price-status-row">
                                 <h1 className="price-main">{priceFormatted}</h1>
                                 <div className="header-actions">
+                                    <div style={{ display: 'inline-block', marginRight: '8px' }}>
+                                        <AlertSubscribeButton 
+                                            alertType="property" 
+                                            targetId={mls_number} 
+                                            buttonText="🔔 Watch" 
+                                        />
+                                    </div>
                                     <button className="share-btn" onClick={handleShare} aria-label="Share property">
                                         <span className="share-icon">📤</span> Share
                                     </button>
