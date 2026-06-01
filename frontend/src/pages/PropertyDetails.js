@@ -18,7 +18,7 @@ const icon = L.divIcon({
 });
 
 const API_BASE = process.env.REACT_APP_API_BASE
-    || (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/api/listings` : (window.location.hostname === 'localhost' ? 'http://localhost:8000/api/listings' : '/api/listings'));
+    || (window.location.hostname === 'localhost' ? 'http://localhost:8000/api/listings' : '/api/listings');
 
 // Helper to format PascalCase/camelCase strings into "Spaced Words"
 const formatPascalCase = (str) => {

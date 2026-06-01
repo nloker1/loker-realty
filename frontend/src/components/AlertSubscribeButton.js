@@ -6,7 +6,7 @@ const AlertSubscribeButton = ({ alertType, targetId, buttonText = "Subscribe" })
     const [status, setStatus] = useState('idle'); // idle, loading, success, error
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const API_BASE = process.env.REACT_APP_API_BASE || (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/api` : (window.location.hostname === 'localhost' ? 'http://localhost:8000/api' : '/api'));
+    const API_BASE = process.env.REACT_APP_API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:8000/api' : '/api');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
