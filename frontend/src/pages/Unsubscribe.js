@@ -9,7 +9,7 @@ const Unsubscribe = () => {
     const token = searchParams.get('token');
     const [status, setStatus] = useState('loading'); // loading, success, error
 
-    const API_BASE = process.env.REACT_APP_API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:8000/api' : '/api');
+    const API_BASE = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/api` : '/api';
 
     useEffect(() => {
         if (!token) {
