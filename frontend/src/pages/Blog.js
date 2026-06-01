@@ -8,6 +8,11 @@ const Blog = () => {
   // Example blog posts data
   const blogPosts = [
     {
+      id: "decoding-white-salmon-r2-zone",
+      title: "Decoding White Salmons R2 Zone",
+      date: "May 27, 2026"
+    },
+    {
       id: "wyers-end-buyer-guide",
       title: "Wyers End Buyers Guide",
       date: "May 14, 2026"
