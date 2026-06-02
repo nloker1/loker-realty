@@ -207,24 +207,34 @@ const PropertyDetails = () => {
     if (error || !listing) return <div className="error-state">Something went wrong loading this property. <button className="back-link-btn" onClick={() => navigate('/map')}>Return to Map</button></div>;
 
     const priceFormatted = listing.price?.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-
+    
     const handleShare = async () => {
+        // Dynamically build the optimized preview short-link
+        const shareUrl = `https://www.gorgerealty.com/p/${listing.mls_number}`;
+
         const shareData = {
             title: document.title,
             text: `Check out this listing on Gorge Realty: ${listing.address}`,
-            url: window.location.href,
+            url: shareUrl, // Uses the new /p/ link
         };
 
         if (navigator.share) {
             try {
                 await navigator.share(shareData);
             } catch (err) {
-                console.error("Error sharing:", err);
+                // Ignore AbortError (occurs if the user simply closes the native share sheet)
+                if (err.name !== 'AbortError') {
+                    console.error("Error sharing:", err);
+                }
             }
         } else {
-            // Fallback: Copy to clipboard
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link copied to clipboard!");
+            // Fallback: Copy the short-link to the clipboard
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                alert("Optimized link copied to clipboard!");
+            } catch (err) {
+                console.error("Failed to copy link:", err);
+            }
         }
     };
 
