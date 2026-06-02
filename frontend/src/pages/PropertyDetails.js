@@ -341,21 +341,21 @@ const PropertyDetails = () => {
                         {/* Header */}
                         <div className="listing-header">
                             <div className="price-status-row">
-                                <h1 className="price-main">{priceFormatted}</h1>
-                                <div className="header-actions">
-                                    <div style={{ display: 'inline-block', marginRight: '8px' }}>
-                                        <AlertSubscribeButton 
-                                            alertType="property" 
-                                            targetId={mls_number} 
-                                            buttonText="🔔 Watch" 
-                                        />
-                                    </div>
-                                    <button className="share-btn" onClick={handleShare} aria-label="Share property">
-                                        <span className="share-icon">📤</span> Share
-                                    </button>
+                                <div className="price-group">
+                                    <h1 className="price-main">{priceFormatted}</h1>
                                     <span className={`status-badge ${(listing.status || listing.internal_status)?.toLowerCase()}`}>
                                         {listing.status || listing.internal_status || 'Active'}
                                     </span>
+                                </div>
+                                <div className="header-actions">
+                                    <AlertSubscribeButton 
+                                        alertType="property" 
+                                        targetId={mls_number} 
+                                        buttonText="🔔 Watch" 
+                                    />
+                                    <button className="share-btn" onClick={handleShare} aria-label="Share property">
+                                        <span className="share-icon">📤</span> Share
+                                    </button>
                                 </div>
                             </div>
                         <div className="header-address">
