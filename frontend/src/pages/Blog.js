@@ -8,6 +8,11 @@ const Blog = () => {
   // Example blog posts data
   const blogPosts = [
     {
+      id: "may-market-update-2026",
+      title: "May Market Report: Hood River + White Salmon",
+      date: "June 8, 2026"
+    },
+    {
       id: "decoding-white-salmon-r2-zone",
       title: "Decoding White Salmons R2 Zone",
       date: "May 27, 2026"

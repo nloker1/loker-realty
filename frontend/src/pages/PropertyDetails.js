@@ -22,23 +22,20 @@ const API_BASE = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_UR
 // Helper to format PascalCase/camelCase strings into "Spaced Words"
 const formatPascalCase = (str) => {
     if (!str) return '';
-    // 1. Special case: "minisplit" (handle common source typo)
     let formatted = str.replace(/minisplit/gi, 'Mini Split');
-    // 2. Insert spaces before capital letters (e.g., SharedWell -> Shared Well)
-    // but not at the start of the string.
     formatted = formatted.replace(/([a-z])([A-Z])/g, '$1 $2');
     return formatted;
 };
 
 const PropertyDetails = () => {
     const { mls_number } = useParams();
-    const navigate = useNavigate(); // Add navigate
+    const navigate = useNavigate();
 
     const handleBackClick = () => {
         if (window.history.state && window.history.state.idx > 0) {
             navigate(-1);
         } else {
-            navigate('/map'); // Fallback if opened directly from email/link
+            navigate('/map');
         }
     };
 
@@ -46,7 +43,6 @@ const PropertyDetails = () => {
     const [mainImage, setMainImage] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
     // --- FETCH LOGIC ---
@@ -76,11 +72,9 @@ const PropertyDetails = () => {
                 const city = data.city || '';
                 const state = data.state || '';
 
-                // Update Page Title
                 const fullAddress = `${address}, ${city}, ${state}`;
                 document.title = `${fullAddress} | ${price} | Gorge Realty`;
 
-                // Update Meta Description
                 let metaDescription = document.querySelector('meta[name="description"]');
                 if (!metaDescription) {
                     metaDescription = document.createElement('meta');
@@ -89,7 +83,6 @@ const PropertyDetails = () => {
                 }
                 metaDescription.setAttribute("content", `View details for ${address} in ${city}, ${state}. ${beds} beds, ${baths} baths, priced at ${price}. Expert real estate service by Nate Loker.`);
 
-                // --- 1. JSON-LD SCHEMA (SEO) ---
                 let scriptTag = document.getElementById('property-schema');
                 if (!scriptTag) {
                     scriptTag = document.createElement('script');
@@ -122,7 +115,6 @@ const PropertyDetails = () => {
                 };
                 scriptTag.text = JSON.stringify(schemaData);
 
-                // --- 2. CANONICAL TAG (SEO) ---
                 let canonicalTag = document.querySelector('link[rel="canonical"]');
                 if (!canonicalTag) {
                     canonicalTag = document.createElement('link');
@@ -131,7 +123,6 @@ const PropertyDetails = () => {
                 }
                 canonicalTag.setAttribute("href", window.location.href.split('?')[0]);
 
-                // --- 3. OPEN GRAPH (SOCIAL) ---
                 const setOgTag = (property, content) => {
                     let tag = document.querySelector(`meta[property="${property}"]`);
                     if (!tag) {
@@ -164,7 +155,6 @@ const PropertyDetails = () => {
         return () => { document.body.style.overflow = ''; };
     }, [isLightboxOpen]);
 
-    // --- GALLERY LOGIC (useCallback to avoid stale closures) ---
     const handleNext = useCallback((e) => {
         if (e) e.stopPropagation();
         if (!listing?.images?.length) return;
@@ -197,7 +187,6 @@ const PropertyDetails = () => {
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
-            // Reset metadata when leaving the page
             document.title = "Gorge Realty";
         };
     }, [isLightboxOpen, handleNext, handlePrev]);
@@ -206,29 +195,46 @@ const PropertyDetails = () => {
     if (error === 'not_found') return <div className="error-state">Property not found. <button className="back-link-btn" onClick={() => navigate('/map')}>Return to Map</button></div>;
     if (error || !listing) return <div className="error-state">Something went wrong loading this property. <button className="back-link-btn" onClick={() => navigate('/map')}>Return to Map</button></div>;
 
+    // --- TRANSFORMATION & FORMATTING ZONE ---
     const priceFormatted = listing.price?.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+    const taxAnnualAmountFormatted = listing.tax_annual_amount?.toLocaleString('en-US', { 
+    style: 'currency', 
+    currency: 'USD', 
+    maximumFractionDigits: 0 
+});
+    
+    // Check if the property has a status of "sold" (case-insensitive safeguard)
+    const isSold = (listing.status || listing.internal_status)?.toLowerCase() === 'sold';
+    
+    // Format the closing parameters
+    const closePriceFormatted = listing.close_price?.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+    const listPriceFormatted = listing.price?.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+    const listDateFormatted = listing.created_at 
+    ? new Date(listing.created_at).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      })
+    : 'N/A';
     
     const handleShare = async () => {
-        // Dynamically build the optimized preview short-link
         const shareUrl = `https://www.gorgerealty.com/p/${listing.mls_number}`;
-
         const shareData = {
             title: document.title,
             text: `Check out this listing on Gorge Realty: ${listing.address}`,
-            url: shareUrl, // Uses the new /p/ link
+            url: shareUrl,
         };
 
         if (navigator.share) {
             try {
                 await navigator.share(shareData);
             } catch (err) {
-                // Ignore AbortError (occurs if the user simply closes the native share sheet)
                 if (err.name !== 'AbortError') {
                     console.error("Error sharing:", err);
                 }
             }
         } else {
-            // Fallback: Copy the short-link to the clipboard
             try {
                 await navigator.clipboard.writeText(shareUrl);
                 alert("Optimized link copied to clipboard!");
@@ -243,66 +249,39 @@ const PropertyDetails = () => {
             {/* --- LIGHTBOX OVERLAY --- */}
             {isLightboxOpen && (
                 <div className="lightbox-overlay" onClick={() => setIsLightboxOpen(false)}>
-                    
-                    {/* Close Button (Fixed to top right of screen) */}
-                    <button className="lightbox-close-fixed" onClick={() => setIsLightboxOpen(false)}>
-                        Close ×
-                    </button>
-
-                    {/* Scrollable Container */}
+                    <button className="lightbox-close-fixed" onClick={() => setIsLightboxOpen(false)}>Close ×</button>
                     <div className="lightbox-scroll-container" onClick={(e) => e.stopPropagation()}>
                         {listing.images && listing.images.map((img, index) => (
                             <div key={index} className="lightbox-image-wrapper">
-                                <img 
-                                    src={img.url} 
-                                    className="lightbox-feed-img" 
-                                    alt={`Gallery ${index + 1}`} 
-                                    loading="lazy" /* Good for performance! */
-                                />
-                                {/* Optional: Add a photo count overlay like "1 of 25" */}
+                                <img src={img.url} className="lightbox-feed-img" alt={`Gallery ${index + 1}`} loading="lazy" />
                                 <span className="image-counter-overlay">{index + 1} / {listing.images.length}</span>
                             </div>
                         ))}
                     </div>
                 </div>
             )}
+            
             <nav className="details-nav">
-                {/* Added 'details-nav-flex' class to handle the layout */}
                 <div className="details-container details-nav-flex">
-                    
                     <button className="back-link-btn" onClick={handleBackClick}>← Back to Map</button>
-                    
-                    {/* RIGHT SIDE: Branding Group */}
                     <div className="nav-branding">
                         <img src="/real-logo.png" alt="Real Broker Logo" className="nav-logo" />
                         <span className="brokerage-text">Real Broker, LLC</span>
                     </div>
-                    
                 </div>
             </nav>
 
             {/* --- MEDIA SECTION --- */}
             <div className="media-section">
                 <div className="main-media-container">
-
                     <img 
                         src={mainImage || listing.photo_url} 
                         alt={`${listing.is_address_exposed ? listing.address : `MLS# ${listing.mls_number}`} - ${listing.city}, ${listing.state} Real Estate Listing`} 
                         className="main-hero-img clickable-hero" 
                         onClick={() => setIsLightboxOpen(true)}
                     />
-                    
-                    {/* Left Arrow */}
-                    {listing.images?.length > 1 && (
-                        <button className="gallery-arrow left" onClick={handlePrev}>&#10094;</button>
-                    )}
-
-                    {/* Right Arrow */}
-                    {listing.images?.length > 1 && (
-                        <button className="gallery-arrow right" onClick={handleNext}>&#10095;</button>
-                    )}
-
-                    {/* Image Counter Badge */}
+                    {listing.images?.length > 1 && <button className="gallery-arrow left" onClick={handlePrev}>&#10094;</button>}
+                    {listing.images?.length > 1 && <button className="gallery-arrow right" onClick={handleNext}>&#10095;</button>}
                     {listing.images?.length > 1 && (
                         <span className="hero-image-count" onClick={() => setIsLightboxOpen(true)}>
                             📷 {listing.images.findIndex(img => img.url === mainImage) + 1} / {listing.images.length}
@@ -310,20 +289,19 @@ const PropertyDetails = () => {
                     )}
                 </div>
                 
-                {/* Thumbnails */}
                 <div className="details-container">
                     {listing.images?.length > 1 && (
                         <div className="thumb-scroll-container">
                             <div className="thumb-bar">
                                 {listing.images.map((img, i) => (
                                     i < MAX_THUMBS && (
-                                    <div 
-                                        key={i} 
-                                        className={`thumb-item ${(mainImage === img.url) ? 'active' : ''}`}
-                                        onClick={() => setMainImage(img.url)}
-                                    >
-                                        <img src={img.url} alt={`thumb ${i}`} />
-                                    </div>
+                                        <div 
+                                            key={i} 
+                                            className={`thumb-item ${(mainImage === img.url) ? 'active' : ''}`}
+                                            onClick={() => setMainImage(img.url)}
+                                        >
+                                            <img src={img.url} alt={`thumb ${i}`} />
+                                        </div>
                                     )
                                 ))}
                             </div>
@@ -348,23 +326,15 @@ const PropertyDetails = () => {
                                     </span>
                                 </div>
                                 <div className="header-actions">
-                                    <AlertSubscribeButton 
-                                        alertType="property" 
-                                        targetId={mls_number} 
-                                        buttonText="🔔 Watch" 
-                                    />
+                                    <AlertSubscribeButton alertType="property" targetId={mls_number} buttonText="🔔 Watch" />
                                     <button className="share-btn" onClick={handleShare} aria-label="Share property">
                                         <span className="share-icon">📤</span> Share
                                     </button>
                                 </div>
                             </div>
-                        <div className="header-address">
-                            <h2>
-                                {listing.is_address_exposed 
-                                    ? listing.address 
-                                    : 'Undisclosed Address'}
-                            </h2>
-                        </div>
+                            <div className="header-address">
+                                <h2>{listing.is_address_exposed ? listing.address : 'Undisclosed Address'}</h2>
+                            </div>
                         </div>
 
                         {/* Stats Bar */}
@@ -386,13 +356,35 @@ const PropertyDetails = () => {
 
                         <div className="divider"></div>
 
+                        {/* --- ADDED: CONDITIONAL SOLD DATA SECTION --- */}
+                        {isSold && (
+                            <>
+                                <div className="section-block sold-insights-section">
+                                    <h3>Sold Insights</h3>
+                                    <div className="facts-grid">
+                                        <div className="fact-row"><span>Closed Price:</span> <strong>{closePriceFormatted || 'N/A'}</strong></div>
+                                        <div className="fact-row"><span>List Price at Sale:</span> <strong>{listPriceFormatted || 'N/A'}</strong></div>
+                                        <div className="fact-row"><span>List Date:</span> <strong>{listDateFormatted || 'N/A'}</strong></div>
+                                        <div className="fact-row"><span>Days On Market:</span> <strong>{listing.days_on_market ?? 'N/A'} Days</strong></div>
+                                        <div className="fact-row"><span>Buyer's Agent:</span> <strong>{listing.buyer_agent_name || 'Undisclosed Non-Member'}</strong></div>
+                                    </div>
+                                </div>
+                                <div className="divider"></div>
+                            </>
+                        )}
+
                         {/* Facts Grid */}
                         <div className="section-block">
                             <h3>Facts & Features</h3>
                             <div className="facts-grid">
-                                <div className="fact-row"><span>Type:</span> <strong>{formatPascalCase(listing.property_type)}</strong></div>
+                                <div className="fact-row"><span>Property Type:</span> <strong>{formatPascalCase(listing.property_type)}</strong></div>
+                                <div className="fact-row"><span>Property Subtype:</span> <strong>{formatPascalCase(listing.property_sub_type) || 'N/A'}</strong></div>
                                 <div className="fact-row"><span>Year Built:</span> <strong>{listing.year_built}</strong></div>
+                                <div className="fact-row"><span>Building SqFt:</span> <strong>{listing.sqft || 'N/A'}  </strong></div>
                                 <div className="fact-row"><span>Lot Size:</span> <strong>{listing.acreage || 'N/A'} Acres</strong></div>
+                                <div className="fact-row"><span>Zoning:</span> <strong>{listing.zoning || 'N/A'} </strong></div>
+                                <div className="fact-row"><span>Annual Taxes:</span> <strong>{taxAnnualAmountFormatted || 'N/A'}</strong></div>
+
                                 <div className="fact-row"><span>MLS #:</span> <strong>{listing.mls_number}</strong></div>
                             </div>
                         </div>
@@ -415,27 +407,17 @@ const PropertyDetails = () => {
 
                         <div className="divider"></div>
 
-                        {/* Map Section for Mobile (only visible on mobile) */}
+                        {/* Map Section for Mobile */}
                         <div className="section-block mobile-only-map">
                             <h3>Location</h3>
                             <div className="mini-map-container">
                                 {listing.lat && listing.lon ? (
-                                    <MapContainer 
-                                        center={[listing.lat, listing.lon]} 
-                                        zoom={14} 
-                                        scrollWheelZoom={false}
-                                        className="detail-leaflet-container"
-                                    >
-                                        <TileLayer
-                                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                        />
+                                    <MapContainer center={[listing.lat, listing.lon]} zoom={14} scrollWheelZoom={false} className="detail-leaflet-container">
+                                        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                         <Marker position={[listing.lat, listing.lon]} icon={icon} />
                                     </MapContainer>
                                 ) : (
-                                    <div className="map-placeholder">
-                                        Map location unavailable for this property.
-                                    </div>
+                                    <div className="map-placeholder">Map location unavailable for this property.</div>
                                 )}
                             </div>
                             <div className="map-address-footer">
@@ -448,10 +430,10 @@ const PropertyDetails = () => {
                         <div className="listing-attribution">
                             <div className="agent-info">
                                 <p className="small-text">Listed by: {listing.list_agent_name}: {listing.attribution_contact}, {listing.listing_brokerage} </p>
-                            <div className="source-row">
-                                <span className="small-text">Source: RMLS™</span>
-                                <img src="/rmls_logo.jpg" alt="RMLS Logo" className="compliance-logo-source" /> 
-                            </div>
+                                <div className="source-row">
+                                    <span className="small-text">Source: RMLS™</span>
+                                    <img src="/rmls_logo.jpg" alt="RMLS Logo" className="compliance-logo-source" /> 
+                                </div>
                             </div>
                         </div>
 
@@ -463,22 +445,12 @@ const PropertyDetails = () => {
                             <h3>Property Location</h3>
                             <div className="mini-map-container">
                                 {listing.lat && listing.lon ? (
-                                    <MapContainer 
-                                        center={[listing.lat, listing.lon]} 
-                                        zoom={14} 
-                                        scrollWheelZoom={false}
-                                        className="detail-leaflet-container"
-                                    >
-                                        <TileLayer
-                                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                        />
+                                    <MapContainer center={[listing.lat, listing.lon]} zoom={14} scrollWheelZoom={false} className="detail-leaflet-container">
+                                        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                         <Marker position={[listing.lat, listing.lon]} icon={icon} />
                                     </MapContainer>
                                 ) : (
-                                    <div className="map-placeholder">
-                                        Map location unavailable for this property.
-                                    </div>
+                                    <div className="map-placeholder">Map location unavailable for this property.</div>
                                 )}
                             </div>
                             <div className="map-address-footer">
@@ -490,7 +462,7 @@ const PropertyDetails = () => {
 
                 </div>
 
-                {/* --- RESTORED COMPLIANCE FOOTER --- */}
+                {/* --- COMPLIANCE FOOTER --- */}
                 <footer className="compliance-footer-inline">
                     <img src="/rmls_logo.jpg" alt="RMLS Logo" className="compliance-logo-small" /> 
                     <div className="compliance-text-block">
