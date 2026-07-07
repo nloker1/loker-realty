@@ -2,6 +2,16 @@
 # Market Report (HR + WS): June 2026 
 **Target Markets:** Hood River (97031) & White Salmon (98672)
 
+<div style="display: flex; justify-content: center; margin: 2rem 0;">
+  <iframe width="315" height="560"
+    src="https://www.youtube.com/embed/d04hNiS5ZRo"
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen>
+  </iframe>
+</div>
+
 ### 1. Months of Inventory (MOI)
 
 Months of Inventory measures supply-and-demand leverage.
