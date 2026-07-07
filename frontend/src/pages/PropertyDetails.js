@@ -24,6 +24,7 @@ const formatPascalCase = (str) => {
     if (!str) return '';
     let formatted = str.replace(/minisplit/gi, 'Mini Split');
     formatted = formatted.replace(/([a-z])([A-Z])/g, '$1 $2');
+    formatted = formatted.replace(/,\s*/g, ', ');
     return formatted;
 };
 
