@@ -68,8 +68,8 @@
     display: flex;
     align-items: center; 
     justify-content: center;
-    margin-top: 125px; /* Space between the overlay-text and the consultation-box */
-    margin-bottom: 75px ;
+    margin-top: 80px; /* Space between the overlay-text and the consultation-box */
+    margin-bottom: 50px;
 
 }
 
