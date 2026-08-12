@@ -370,7 +370,7 @@ This table anchors **June 2026** against **June 2025** to show the long-term str
  <br>
 
 **Key Takeaway:** 
-Market activity was stronger year over year with over double the amount of new listings in June 2026 compared to June 2027. The median and average sale price were slightly lower than the previous year but these are small sample sizes so overall prices seem relatively flat. 
+Market activity was stronger year over year with over double the amount of new listings in June 2026 compared to June 2025. The median and average sale price were slightly lower than the previous year but these are small sample sizes so overall prices seem relatively flat. 
 
 
 ### Summary and Moving Forward 
