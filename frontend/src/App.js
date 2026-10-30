@@ -10,6 +10,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import PropertyDetails from './pages/PropertyDetails';
 import PropertyMap from './components/map/PropertyMap';
+import AdminActivity from './admin/AdminActivity';
 
 // Components
 import Header from './components/Header';
@@ -21,6 +22,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes> {/* Wrap Route components inside Routes */}
+          <Route path="/admin/*" element={<AdminActivity />} />
           <Route exact path="/" element={<Home />} />
           <Route path="/properties" element={<Listings />} />
           <Route path="/contact" element={<Contact />} />

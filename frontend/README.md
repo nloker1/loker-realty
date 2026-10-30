@@ -68,3 +68,25 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Client activity admin
+
+Open `/admin` for the private, read-only client activity workspace. Its API is
+FastAPI in the sibling real-estate-listings-api repository, not backend-server.
+Configure the backend owner credentials first; see that repository's README
+section "Private client activity workspace" for the guarded local demo setup.
+
+The admin API defaults to `http://<same-loopback-host>:8000` locally and the current
+origin in production. An explicit `REACT_APP_ADMIN_API_URL` can override the API
+origin (no `/api/admin` suffix). Use same-site hosting or a same-origin proxy;
+requests include HttpOnly session cookies. Never add admin passwords, password
+hashes, or session secrets to frontend environment variables.
+
+Run the isolated UI tests (all requests are mocked):
+
+```bash
+CI=true npm test -- --watchAll=false --runInBand
+```
+
+Client data, engagement counters and timelines are fetched only after session
+validation. Opens/clicks are recorded activity, not confirmed human readership.

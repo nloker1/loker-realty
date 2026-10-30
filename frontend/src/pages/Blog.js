@@ -8,6 +8,11 @@ const Blog = () => {
   // Example blog posts data
   const blogPosts = [
     {
+      id: "wyers-end-buyer-guide",
+      title: "Wyers End Buyers Guide",
+      date: "May 14, 2026"
+    },
+    {
       id: "klickitat-adu-changes-2026",
       title: "Klickitat County: Proposed ADU Changes April 2026",
       date: "Apr 22, 2026"
