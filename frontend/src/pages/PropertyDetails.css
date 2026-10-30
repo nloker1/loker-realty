@@ -173,16 +173,27 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    margin-bottom: 4px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.price-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .header-actions {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
-.share-btn {
+/* Unified Action Buttons/Badges */
+.header-actions .alert-btn-toggle,
+.header-actions .share-btn,
+.status-badge {
     background: #f0f2f5;
     border: 1px solid #ddd;
     border-radius: 20px;
@@ -190,15 +201,21 @@
     font-size: 14px;
     font-weight: 600;
     color: #333;
-    cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
+    height: 34px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0;
     gap: 6px;
-    transition: background 0.2s ease;
 }
 
-.share-btn:hover {
+.header-actions .share-btn:hover,
+.header-actions .alert-btn-toggle:hover {
     background: #e4e6e9;
+    border-color: #ccc;
 }
 
 .share-icon {
@@ -213,16 +230,12 @@
     line-height: 1;
 }
 
+/* Status badge specific overrides */
 .status-badge {
-    font-size: 14px;
+    cursor: default;
     font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 4px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: #28a745;
-    border: 1px solid #d1d1d5;
-    color: #2a2a33;
     flex-shrink: 0;
 }
 
@@ -244,7 +257,7 @@
 }
 
 .header-address h2 {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 600;
     color: #596b82;
     margin: 4px 0 0 0;
@@ -609,6 +622,35 @@
 
     .price-main {
         font-size: 24px;
+    }
+
+    .header-address h2 {
+        font-size: 18px;
+    }
+
+    .header-actions .alert-btn-toggle,
+    .header-actions .share-btn,
+    .status-badge {
+        padding: 5px 12px;
+        font-size: 13px;
+        height: 30px;
+        gap: 5px;
+    }
+
+    .share-icon {
+        font-size: 14px;
+    }
+
+    .header-actions {
+        gap: 6px;
+    }
+
+    .price-status-row {
+        gap: 8px;
+    }
+
+    .price-group {
+        gap: 8px;
     }
 
     .section-block h3 {

@@ -7,6 +7,31 @@ import './Blog.css';
 const Blog = () => {
   // Example blog posts data
   const blogPosts = [
+      {
+      id: "july-market-update-2026",
+      title:"July Market Report: Hood River + White Salmon",
+      date: "August 12, 2026"
+    },
+    {
+      id: "june-market-update-2026",
+      title:"June Market Report: Hood River + White Salmon",
+      date: "July 7, 2026"
+    },
+    {
+      id: "may-market-update-2026",
+      title: "May Market Report: Hood River + White Salmon",
+      date: "June 8, 2026"
+    },
+    {
+      id: "decoding-white-salmon-r2-zone",
+      title: "Decoding White Salmons R2 Zone",
+      date: "May 27, 2026"
+    },
+    {
+      id: "wyers-end-buyer-guide",
+      title: "Wyers End Buyers Guide",
+      date: "May 14, 2026"
+    },
     {
       id: "wyers-end-buyer-guide",
       title: "Wyers End Buyers Guide",

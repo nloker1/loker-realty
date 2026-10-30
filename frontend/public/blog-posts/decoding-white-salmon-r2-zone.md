@@ -5,7 +5,7 @@
   <iframe 
     width="315" 
     height="560" 
-    src="https://www.youtube.com/shorts/i0-VRl7rbig" 
+    src="https://www.youtube.com/embed/i0-VRl7rbig" 
     title="Decoding White Salmon's R2 Zone" 
     frameborder="0" 
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 

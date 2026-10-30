@@ -5,6 +5,12 @@
   padding: 0;
 }
 
+.listings-embedded {
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
 .listings-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -16,24 +22,59 @@
   margin-bottom: 5px;
 }
 
-.listings-hero h1 {
-  font-size: 42px;
+.listings-hero h2 {
+  font-size: 56px;
   color: #35434a;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
-.listings-hero p {
-  font-size: 18px;
-  color: #666;
+.listings-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
 }
 
 .tabs {
   display: flex;
   justify-content: center;
   gap: 20px;
-  margin-bottom: 40px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
+}
+
+.view-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  color: #888;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.toggle-btn.active {
+  color: #35434a;
+}
+
+.toggle-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #35434a;
 }
 
 .tab-btn {
@@ -55,7 +96,7 @@
 .tab-btn.active::after {
   content: '';
   position: absolute;
-  bottom: -11px;
+  bottom: -4px;
   left: 0;
   width: 100%;
   height: 3px;
@@ -151,6 +192,28 @@
    MOBILE FIX: NO WRAPPERS, FULL WIDTH
    ========================================= */
 @media (max-width: 768px) {
+  .listings-embedded {
+    padding-top: 60px;
+  }
+  
+  .listings-controls {
+    flex-direction: column;
+    gap: 15px;
+    padding: 0 10px 10px 10px;
+    margin-bottom: 20px;
+  }
+
+  .tabs {
+    margin-bottom: 0;
+  }
+  
+  /* (Mobile specific override removed since desktop is now the same) */
+  
+  .view-toggle {
+    width: 100%;
+    justify-content: center;
+  }
+
   .listings-container {
     padding: 0;
     margin: 0;
@@ -158,14 +221,11 @@
     max-width: 100% !important;
   }
 
-  .listings-hero {
-    padding: 30px 20px;
+  .listings-hero h2 {
+    font-size: 46px;
   }
 
-  .tabs {
-    padding: 0 10px 10px 10px;
-    margin-bottom: 20px;
-  }
+  /* .tabs removed here, handled in .listings-controls above */
 
   .listings-grid {
     display: flex !important;
