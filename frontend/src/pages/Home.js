@@ -22,7 +22,7 @@ const Home = () => {
                   <h1>Nate Loker</h1>
                   <h2>Columbia Gorge Realtor | Real Broker LLC </h2>
               </div>
-              <img src="updated_head_shot.jpg" alt="Nate Loker" className="headshot" />
+              <img src="updated_head_shot.png" alt="Nate Loker" className="headshot" />
             </div>
             <div className="consultation-box">
               <a href="https://calendly.com/consultation-with-nate" target="_blank" rel="noopener noreferrer" className="consultation-link">
