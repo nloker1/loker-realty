@@ -21,7 +21,7 @@ test('loads local active and sold fixtures and displays the date in the badge', 
   fireEvent.click(screen.getByRole('button', { name: 'Sold (1)' }));
   const date = await screen.findByText('Oct 30, 2026');
   expect(date.closest('.card-badge')).toHaveTextContent('Sold');
-  expect(screen.getByText('White Salmon, 98672')).toBeInTheDocument();
+  expect(screen.queryByText('White Salmon, 98672')).not.toBeInTheDocument();
   expect(global.fetch.mock.calls[1][0]).toContain('sort=sold_date_desc');
 });
 

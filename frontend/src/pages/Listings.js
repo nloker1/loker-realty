@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { createSlug } from '../utils/slugify';
-import { formatCityName } from '../utils/formatCityName';
 import ListingsMap from '../components/map/ListingsMap';
 import './Listings.css'; 
 
@@ -122,7 +121,6 @@ const Listings = ({ embedded = false }) => {
                   <div className="card-content">
                     <h3 className="card-price">${property.price.toLocaleString()}</h3>
                     <p className="card-address">{property.address}</p>
-                    <p className="card-city">{formatCityName(property.city)}, {property.zipcode}</p>
                   </div>
                 </div>
               ))
