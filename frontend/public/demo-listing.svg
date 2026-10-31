@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Fictional demo home">
+  <rect width="640" height="400" fill="#e9eef0"/>
+  <path d="M0 295 Q180 245 330 295 T640 285 V400 H0Z" fill="#cedcda"/>
+  <path d="M190 196 L320 100 L450 196 V300 H190Z" fill="#faf8f1"/>
+  <path d="M170 199 L320 85 L470 199" fill="none" stroke="#354d5a" stroke-width="16" stroke-linejoin="round"/>
+  <path d="M293 300 V229 H347 V300" fill="#6b9090"/>
+  <path d="M225 217 H266 V258 H225Z M375 217 H416 V258 H375Z" fill="#afcad3"/>
+  <text x="320" y="360" text-anchor="middle" fill="#4d646d" font-family="sans-serif" font-size="17">Demo listing · fictional property</text>
+</svg>

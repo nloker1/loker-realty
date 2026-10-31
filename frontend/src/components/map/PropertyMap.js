@@ -96,8 +96,8 @@ const PropertyMap = () => {
       return filters;
   }, [searchParams]);
 
-  const isLocal = window.location.hostname === 'localhost';
-  const apiBase = isLocal ? 'http://localhost:8000/api/listings' : '/api/listings';
+  const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const apiBase = isLocal ? `http://${window.location.hostname}:8000/api/listings` : '/api/listings';
 
   // ==========================================
   // 6. FETCH LISTINGS (reusable)

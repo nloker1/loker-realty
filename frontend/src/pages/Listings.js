@@ -11,29 +11,36 @@ const Listings = ({ embedded = false }) => {
   const [activeListings, setActiveListings] = useState([]);
   const [soldListings, setSoldListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('active');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'map'
   const navigate = useNavigate();
 
-  const isLocal = window.location.hostname === 'localhost';
-  const apiBase = isLocal ? 'http://localhost:8000/api/listings' : '/api/listings';
+  const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const apiBase = isLocal ? `http://${window.location.hostname}:8000/api/listings` : '/api/listings';
 
   useEffect(() => {
     const fetchMyListings = async () => {
       setLoading(true);
+      setError('');
       try {
         // Fetch Active
         const response = await fetch(`${apiBase}?status=Active&agent_name=Nate Loker`);
+        if (!response.ok) throw new Error('Listings request failed');
         const myActive = await response.json();
+        if (!Array.isArray(myActive)) throw new Error('Invalid listings response');
         setActiveListings(myActive);
 
         // Fetch Sold
         const soldResponse = await fetch(`${apiBase}?status=Sold&agent_name=Nate Loker&sort=sold_date_desc`);
+        if (!soldResponse.ok) throw new Error('Sold listings request failed');
         const mySold = await soldResponse.json();
+        if (!Array.isArray(mySold)) throw new Error('Invalid sold listings response');
         setSoldListings(mySold);
 
       } catch (error) {
         console.error('Error fetching listings:', error);
+        setError('Unable to load listings. Please refresh the page to try again.');
       } finally {
         setLoading(false);
       }
@@ -87,6 +94,8 @@ const Listings = ({ embedded = false }) => {
 
         {loading ? (
           <div className="loading-state">Loading listings...</div>
+        ) : error ? (
+          <div className="empty-state" role="alert">{error}</div>
         ) : viewMode === 'map' ? (
           <ListingsMap listings={listingsToShow} />
         ) : (
@@ -99,23 +108,21 @@ const Listings = ({ embedded = false }) => {
                 }}>
                   <div className="card-image-wrapper">
                     <img src={property.photo_url} alt={property.address} />
-                    <span className={`card-badge ${property.status?.toLowerCase()}`}>
-                      {property.status}
+                    <span className={`card-badge ${property.status?.toLowerCase()}${property.status === 'Sold' && property.close_date ? ' card-badge-with-date' : ''}`}>
+                      <span>{property.status}</span>
+                      {property.status === 'Sold' && property.close_date && (
+                        <time className="card-badge-date" dateTime={property.close_date}>
+                          {new Date(property.close_date).toLocaleDateString('en-US', {
+                            month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+                          })}
+                        </time>
+                      )}
                     </span>
                   </div>
                   <div className="card-content">
                     <h3 className="card-price">${property.price.toLocaleString()}</h3>
                     <p className="card-address">{property.address}</p>
-                    <div className="card-location">
-                      <p className="card-city">{formatCityName(property.city)}, {property.zipcode}</p>
-                      {property.status === 'Sold' && property.close_date && (
-                        <p className="card-sold-date">
-                          Sold <time dateTime={property.close_date}>{new Date(property.close_date).toLocaleDateString('en-US', {
-                            month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC',
-                          })}</time>
-                        </p>
-                      )}
-                    </div>
+                    <p className="card-city">{formatCityName(property.city)}, {property.zipcode}</p>
                   </div>
                 </div>
               ))
