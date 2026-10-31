@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { createSlug } from '../utils/slugify';
+import { formatCityName } from '../utils/formatCityName';
 import ListingsMap from '../components/map/ListingsMap';
 import './Listings.css'; 
 
@@ -105,14 +106,16 @@ const Listings = ({ embedded = false }) => {
                   <div className="card-content">
                     <h3 className="card-price">${property.price.toLocaleString()}</h3>
                     <p className="card-address">{property.address}</p>
-                    <p className="card-city">{property.city}, {property.zipcode}</p>
-                    {property.status === 'Sold' && property.close_date && (
-                      <p className="card-sold-date">
-                        Sold <time dateTime={property.close_date}>{new Date(property.close_date).toLocaleDateString('en-US', {
-                          month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC',
-                        })}</time>
-                      </p>
-                    )}
+                    <div className="card-location">
+                      <p className="card-city">{formatCityName(property.city)}, {property.zipcode}</p>
+                      {property.status === 'Sold' && property.close_date && (
+                        <p className="card-sold-date">
+                          Sold <time dateTime={property.close_date}>{new Date(property.close_date).toLocaleDateString('en-US', {
+                            month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+                          })}</time>
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))
