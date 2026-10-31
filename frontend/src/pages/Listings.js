@@ -27,7 +27,7 @@ const Listings = ({ embedded = false }) => {
         setActiveListings(myActive);
 
         // Fetch Sold
-        const soldResponse = await fetch(`${apiBase}?status=Sold&agent_name=Nate Loker`);
+        const soldResponse = await fetch(`${apiBase}?status=Sold&agent_name=Nate Loker&sort=sold_date_desc`);
         const mySold = await soldResponse.json();
         setSoldListings(mySold);
 
@@ -106,6 +106,13 @@ const Listings = ({ embedded = false }) => {
                     <h3 className="card-price">${property.price.toLocaleString()}</h3>
                     <p className="card-address">{property.address}</p>
                     <p className="card-city">{property.city}, {property.zipcode}</p>
+                    {property.status === 'Sold' && property.close_date && (
+                      <p className="card-sold-date">
+                        Sold <time dateTime={property.close_date}>{new Date(property.close_date).toLocaleDateString('en-US', {
+                          month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+                        })}</time>
+                      </p>
+                    )}
                   </div>
                 </div>
               ))

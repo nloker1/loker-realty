@@ -181,6 +181,13 @@
   color: #888;
 }
 
+.card-sold-date {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #66757d;
+}
+
 .loading-state, .empty-state {
   text-align: center;
   font-size: 20px;
