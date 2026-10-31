@@ -90,3 +90,24 @@ CI=true npm test -- --watchAll=false --runInBand
 
 Client data, engagement counters and timelines are fetched only after session
 validation. Opens/clicks are recorded activity, not confirmed human readership.
+
+To use local UI code with live production data through the guarded local API,
+configure and run the sibling backend's read-only preview profile, then run:
+
+```bash
+npm run start:preview
+```
+
+Open http://localhost:3000/admin. This pins all frontend API addresses to local
+port 8000; the local backend accesses production through the configured read-only
+connection/SSH tunnel. Use the LOCAL preview password, not production credentials.
+The admin screen displays a live-data/read-only banner. See the backend README
+section "Local UI with live production data" for one-time setup and tunnel steps.
+
+The admin landing page is now an activity dashboard: one row per client with
+recorded email opens or link clicks, newest activity first. The period selector
+supports 7 days, 30 days (default), and all time. Counters cover the selected
+period across all pages. Listing-link clicks are labeled separately from other
+email links. "All clients" opens the complete searchable directory, including
+clients without recent activity. Activity uses verified event history; legacy
+tracking counters alone do not create dashboard entries.

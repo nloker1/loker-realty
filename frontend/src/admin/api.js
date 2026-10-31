@@ -38,11 +38,23 @@ export function dateTime(value) {
   }).format(date);
 }
 
+export function friendlyTime(value, now = new Date()) {
+  if (!value) return 'No activity yet';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Date unavailable';
+  const time = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(date);
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (date.toDateString() === now.toDateString()) return `Today at ${time}`;
+  if (date.toDateString() === yesterday.toDateString()) return `Yesterday at ${time}`;
+  return dateTime(value);
+}
+
 const labels = {
-  sent: 'Sent', accepted: 'Accepted by provider', logged_unverified: 'Logged · unverified',
+  sent: 'Sent', accepted: 'Submitted to email service', logged_unverified: 'Delivery not confirmed',
   delivered: 'Delivered', delivery_delayed: 'Delivery delayed', scheduled: 'Scheduled',
-  bounced: 'Bounced', complained: 'Spam complaint', failed: 'Failed', suppressed: 'Suppressed',
-  opened: 'Recorded open', clicked: 'Recorded click',
+  bounced: 'Could not deliver', complained: 'Spam complaint', failed: 'Delivery failed', suppressed: 'Blocked by email service',
+  opened: 'Email opened', clicked: 'Email link clicked',
 };
 export const statusLabel = value => labels[value?.replace('email.', '')] || 'Unknown';
 
