@@ -1,0 +1,431 @@
+GORGE REALTY WEBSITE AUDIT AND ACTION PLAN
+Audit performed: November 2, 2026
+Saved: November 3, 2026
+Website: https://gorgerealty.com
+
+BUSINESS OBJECTIVE
+Generate qualified seller/listing leads in White Salmon, Hood River, The Dalles,
+Parkdale, and Trout Lake. Buyer leads are secondary. Favor sustainable systems
+that reduce manual follow-up over a broad redesign or constant content posting.
+
+ASSESSMENT
+The site has a credible foundation, but currently behaves more like a buyer-search
+tool and agent introduction than a seller lead-generation system. Make three
+things obvious: why hire Nate, what he will do for the seller, and what happens
+when the homeowner contacts him. Improve the conversion path and inquiry handling
+before investing heavily in traffic.
+
+SCOPE AND LIMITS
+Inspected the live homepage, contact page, listings, buyer map, White Salmon market
+page, an education article, active and sold property pages, consultation destination,
+robots.txt, sitemap, and representative invalid URLs. Reviewed frontend and backend
+source and researched local competitors. Used fresh Chrome profiles at desktop
+1440 x 1000 and mobile viewport 390 x 844. Mobile viewport checks are not physical
+phone tests or network/CPU-throttled performance tests.
+
+No forms were submitted, appointments booked, emails sent, private production data
+accessed, or application files changed during the audit. No authenticated Analytics,
+Search Console, Ads, or Google Business Profile data was available. Current traffic,
+rankings, conversion rates, spend, and cost per qualified lead cannot be concluded.
+
+Local audit evidence (temporary files; may not survive cleanup):
+/private/tmp/gorge-site-audit/evidence.md
+/private/tmp/gorge-site-audit/home-desktop.png
+/private/tmp/gorge-site-audit/home-mobile.png
+/private/tmp/gorge-site-audit/contact-mobile.png
+/private/tmp/gorge-site-audit/market-mobile.png
+The evidence has not been copied into this repository.
+
+CONFIRM BEFORE PUBLISHING CLAIMS
+[ ] Confirm current seller services and fee structure.
+    Live metadata advertises "Premium listings for 3.75%." An unused component
+    contains 2.25% and 3% packages. Neither establishes the current offer.
+    Do not publish specific commission, savings, staging, premium placement, or
+    cancellation promises until the actual terms are confirmed.
+    Sources: frontend/public/index.html:13;
+    frontend/src/components/marketing/UspPackages.js:18.
+[ ] Confirm the correct public business phone number.
+    Contact page displays (541) 399-7756, but its tel link calls (541) 241-8998.
+[ ] Confirm ownership/verification and current details of the Google Business Profile.
+
+WHAT ALREADY WORKS
+- Name, portrait, brokerage affiliation, and local focus provide a personal foundation.
+- Active listings and sold transactions can support proof of experience.
+- Buyer map and market pages offer real functionality.
+- Land-use and zoning articles could differentiate local expertise.
+- Live sitemap was recently updated. All 12 sampled entries resolved to active,
+  published listing records. This is not a complete inventory validation.
+- Calendly consultation profile loaded in Chrome. Appointment availability and
+  booking completion were not tested. HTTP-only access returned 403, which did
+  not mean the browser experience was broken.
+
+FIVE HIGHEST-VALUE CHANGES
+1. Repair and reliably record inquiries: correct phone links, persist requests before
+   notifications, and track follow-up status.
+2. Create a clear seller offer and /sell landing page, with the homepage leading to it.
+3. Show seller-specific proof: two documented case studies and actual marketing work.
+4. Fix focused performance and SEO issues: portrait size, bundle delivery, metadata,
+   canonical URLs, and missing-page behavior.
+5. Build focused local discovery: Business Profile plus strong White Salmon and
+   Hood River seller pages, then expand where useful.
+
+PRIORITIZED FINDINGS AND ACTIONS
+Expected impact is qualitative judgment, not a traffic or revenue forecast.
+Effort is relative, not a delivery estimate.
+
+P0 -- PHONE MISMATCH
+Status: Verified live and in code.
+Evidence: https://gorgerealty.com/contact
+frontend/src/pages/Contact.js:85
+Action: Confirm the correct number; make displayed and dialed numbers consistent
+across site and business profiles.
+Impact: Removes a direct obstacle to phone inquiries.
+Effort: Small. Dependency: Correct public number.
+
+P1 -- SELLER POSITIONING AND NAVIGATION
+Status: Verified live and in code.
+Evidence: Homepage leads with "Nate Loker," followed by listings. No explicit seller
+route in the current navigation or application route list.
+frontend/src/pages/Home.js:22; frontend/src/components/Header.js:24;
+frontend/src/App.js:26.
+Action: Seller-focused headline, primary CTA, and /sell page.
+Impact: Makes the homeowner's intended next step clearer.
+Effort: Medium. Dependency: Approved services and offer.
+
+P1 -- INQUIRIES ARE NOT DURABLY RECORDED
+Status: Verified code; actual SMTP delivery/inbox placement unverified.
+Evidence: backend-server/server.js:30 sends a notification but does not persist the
+inquiry, assign status, or record follow-up. Notification uses visitor email as From.
+Action: Persist inquiry before notification, add retry handling, and show unhandled
+inquiries in Admin. Use an authenticated business sender and visitor Reply-To.
+Impact: Reduces lost leads and dependence on inbox memory.
+Effort: Medium. Dependency: Database/API and notification design.
+
+P1 -- MOBILE ENTRY EXPERIENCE AND ASSET WEIGHT
+Status: Verified browser behavior and measured resource sizes.
+Evidence: At 390 x 844, the homepage consultation CTA falls below the first screen.
+Portrait downloaded 2,017,451 bytes; main JavaScript 1,108,663 bytes. Initial
+first-party resource transfer was about 3.42 MB. The bundle HEAD response had no
+Content-Encoding even when gzip/Brotli was requested; no explicit Cache-Control
+header was observed (ETag and Last-Modified were present).
+Sources: frontend/src/pages/Home.js:25; frontend/src/pages/Home.css;
+frontend/public/updated_head_shot.png; frontend/src/App.js.
+Action: Resize/compress portrait, reduce hero height, put primary seller CTA in the
+first screen, enable text compression, and split heavy map/chart/Admin code.
+Impact: Easier access to the next step, particularly on mobile connections.
+Effort: Small to medium. Dependency: Approved hero copy and hosting access.
+Measurement limit: A single unthrottled run reached load event around 1.39 seconds.
+This is not LCP, INP, CLS, a real-phone result, or a general speed score. PageSpeed
+API returned 429 quota exceeded; no Lighthouse score or CWV verdict was obtained.
+
+P1 -- METADATA AND UNCONFIRMED PRICING
+Status: Verified live and in code.
+Evidence: Sampled pages share the 3.75% description. Active and sold property titles
+settled on "Gorge Realty" despite address-specific title code.
+Sources: frontend/public/index.html:13;
+frontend/src/pages/PropertyDetails.js:68 and :179.
+Action: Confirm fee messaging and implement reliable route-specific metadata.
+Impact: Clearer expectations and more relevant search presentation.
+Effort: Small to medium. Dependency: Fee confirmation.
+
+P1 -- INCOMPLETE SELLER CONVERSION MEASUREMENT
+Status: Verified source and browser observations; account configuration unverified.
+Evidence: GA4 is installed. Source tracks newsletter subscription but not accepted
+contact inquiries. Browser loaded Google advertising resources; this does not prove
+lead conversions are configured or ads are running.
+Sources: frontend/public/index.html:18;
+frontend/src/components/SubscriptionForm.js:52;
+frontend/src/pages/Contact.js:27.
+Action: Track accepted inquiries and downstream outcomes separately from clicks or
+subscriptions. Connect inquiry IDs to bookings and listing outcomes.
+Impact: Enables evidence-based marketing decisions.
+Effort: Medium. Dependency: Analytics access and durable inquiry IDs.
+
+P2 -- LISTING CANONICALS AND METADATA LEAKAGE
+Status: Verified live and in code.
+Evidence: An alternate slug rendered the same listing and self-canonicalized.
+Back to Map navigation retained the property's canonical and schema.
+frontend/src/pages/PropertyDetails.js:119 and :179.
+Action: Establish an authoritative slug/canonical per listing and clean up metadata
+on route changes. Consolidate alternate URLs.
+Impact: Reduces conflicting indexing signals.
+Effort: Medium. Dependency: URL policy and hosting/API routing.
+
+P2 -- MISSING-PAGE RESPONSES
+Status: Verified live.
+Evidence: Unknown document and nonexistent property URLs returned HTTP 200. The
+nonexistent listing API correctly returned 404; the rendered page said not found.
+Unknown general route rendered no useful content.
+Sources: frontend/src/App.js:25; frontend/src/pages/PropertyDetails.js:195;
+backend app/main.py:147; production SPA hosting fallback.
+Action: Genuine 404/410 policy and useful recovery navigation. Do not redirect all
+unavailable listings to the homepage.
+Impact: Better visitor recovery and crawl quality.
+Effort: Medium. Dependency: Hosting/Nginx review.
+
+P2 -- SELLER PROOF IS WEAKLY PRESENTED
+Status: Verified live and source.
+Evidence: Testimonials primarily describe buying. Sold results are behind a tab;
+agent filters include both listing-side and buyer-side representation.
+Sources: frontend/src/components/marketing/Testimonials.js:6;
+frontend/src/pages/Listings.js:64; backend app/main.py get_listings.
+Action: Two documented seller case studies. Distinguish listing representation
+from buyer representation; don't describe all displayed transactions as your listings.
+Impact: Gives homeowners stronger reasons to hire Nate.
+Effort: Medium. Dependency: Verified results and appropriate permissions.
+
+P2 -- SITEMAP COVERAGE
+Status: Verified live and source.
+Evidence: https://gorgerealty.com/sitemap.xml had 536 URLs: 7 general pages and
+529 property pages. It omitted Education/articles, /properties, and several supported
+market pages. robots.txt allows crawling but does not reference the sitemap.
+Sources: backend-server/generate-sitemap.js:24;
+frontend/public/robots.txt.
+Action: Include valuable canonical content; exclude errors/non-indexable pages;
+use meaningful modification dates and add sitemap reference to robots.txt.
+Impact: Better discovery of differentiated content.
+Effort: Small. Dependency: Canonical/indexing policy.
+
+P2 -- ACCESSIBILITY AND LINK DISCOVERY
+Status: Verified source and representative DOM checks; not a full accessibility audit.
+Evidence: Listing cards are clickable divs, Locations is a non-button control,
+hamburger lacks aria-expanded, newsletter email has no label, and gallery/testimonial
+arrow controls lack descriptive accessible names.
+Sources: frontend/src/pages/Listings.js:104;
+frontend/src/components/Header.js:16 and :28;
+frontend/src/components/SubscriptionForm.js:76;
+frontend/src/components/marketing/Testimonials.js;
+frontend/src/pages/PropertyDetails.js:284.
+Action: Real links/buttons, keyboard support, persistent labels, expanded states,
+and descriptive control names. Preserve visible focus.
+Impact: More usable navigation and discoverable property links.
+Effort: Small to medium. Dependency: Component changes.
+
+P2 -- MARKET DATA AND LISTING STATUS PRESENTATION
+Status: Verified source; sold schema problem also verified live.
+Evidence: "Median Home Price" is calculated from active asking prices, not closed
+sale prices. A sold property still published Offer availability InStock and a Watch CTA.
+Sources: backend app/main.py:309;
+frontend/src/pages/CityMarketHub.js:124;
+frontend/src/pages/PropertyDetails.js:110 and :330.
+Action: Label active asking-price statistics accurately; show geography, source,
+exclusions, and update date. Match structured data and CTAs to property status.
+Impact: Better credibility and fewer misleading expectations.
+Effort: Small to medium. Dependency: Data definitions and listing retention policy.
+
+SELLER PAGE AND COPY RECOMMENDATIONS -- IDEAS TO APPROVE/TEST
+Proposed hero:
+"Sell your Columbia River Gorge home with a clear plan."
+"Work directly with Nate Loker on pricing, preparation, and marketing in White
+Salmon, Hood River, The Dalles, Parkdale, and Trout Lake."
+Primary CTA: "Discuss selling my home"
+Secondary CTA: "See my marketing approach"
+
+Keep the portrait, but lead with the homeowner's decision. The /sell page should
+explain pricing guidance, pre-list preparation, actual marketing deliverables,
+communication/negotiation process, confirmed fees and separate costs, proof, and
+next steps. Use actual photography/video/listing examples only for services offered.
+Do not revive the old package table without confirming terms.
+
+Initial offer: A seller pricing-and-preparation consultation rather than a purported
+instant valuation. Qualify requests before preparing a detailed property analysis.
+Suggested intake: name, email, property address, selling timeframe, optional phone.
+Explain what will happen next and provide an optional booking step. Promise only
+a response time the business can sustain.
+
+Seller proof: Two concise case studies explaining the initial challenge, preparation,
+marketing, decisions, and verified result. Do not invent results, testimonials,
+savings, or seller-side representation.
+
+JOURNEY AND DROP-OFF POINTS
+Search/ad -> site: Shared metadata or unconfirmed fee claim creates wrong expectations.
+Fix: Match the landing page to selling, pricing, preparation, or the local market.
+Homepage -> services: Seller offer requires inference; buyer tools dominate.
+Fix: Visible Sell navigation and one primary CTA.
+Interest -> inquiry: Generic message box makes the homeowner compose the request.
+Fix: Structured property/timing questions and clear offer.
+Inquiry -> response: Depends on email; no durable inquiry record in handler.
+Fix: Save inquiry, confirm receipt, retry notification, assign next action.
+Response -> consultation: No verified inquiry-to-booking connection.
+Fix: Associate actual booking/completion with inquiry.
+Consultation -> signed listing: Alert engagement isn't a seller pipeline.
+Fix: Track qualification, consultation, proposal, signed listing, and outcome.
+
+TECHNICAL SEO APPROACH
+The application serves a common HTML shell and renders content with JavaScript.
+Google can render JavaScript; do not interpret the shell as proof of non-indexability.
+However, API dependencies, non-crawlable cards, metadata bugs, and status codes
+create avoidable risk. Start rendering improvements with homepage, /sell, key local
+pages and articles. A framework rewrite is not required.
+
+Canonical policy: One preferred hostname and authoritative listing slug. The www
+and non-www homepages both served 200 in checks; legacy lokerrealty.com redirected
+to the primary domain. Consolidate duplicates intentionally.
+
+Listings: Preserve useful sold pages where permitted. Truly removed pages need an
+intentional status-code and retention policy. MLS descriptions alone do not provide
+a durable differentiator; original seller guidance and case studies matter more.
+Duplicate MLS descriptions do not automatically imply a duplicate-content penalty.
+
+Structured data: Correct listing availability/address fields; add accurate business
+identity and breadcrumbs where appropriate. Do not fabricate an office address or
+expect schema alone to improve rankings.
+
+Geographic coverage: Parkdale is not in current location navigation. The tested
+/market/parkdale route could not load data (API 404); this was a coverage gap, not
+an observed broken menu link. Add target-area pages only with genuinely useful content.
+
+LOCAL COMPETITOR RESEARCH
+Compared content, not measured rankings or conversion rates:
+- Copper West: https://www.copperwest.com/seller/
+  Explicit seller services, marketing, seller testimonials and market-analysis offer.
+- Don Nunamaker: https://donnunamaker.com/sellers
+  Explicit seller route plus preparation and process resources.
+- Kim Chamness: https://kimchadney.withwre.com/
+  Personal local experience connected to a seller consultation.
+
+Sample search research also surfaced large portals for market/valuation queries.
+This was not a location-personalized Google Maps ranking test. Do not assume exact
+rank positions or lack of indexing without Search Console. Compete through specific
+seller expertise, personal service and transparent confirmed terms, not a generic
+"homes for sale" portal clone.
+
+TRAFFIC STRATEGY
+1. Referrals: Often high-quality when relevant. Low cash cost, modest relationship
+   work, potentially immediate. Give past clients and local professionals a useful
+   seller page to share; ask for introductions.
+2. Google Business Profile: Strong local intent; low cash cost, setup and light ongoing
+   maintenance; weeks/months to evaluate. Verify ownership, accurate name/contact
+   details, appropriate category, genuine location/service area, photos and neutral
+   review requests. No fake offices or review gating. Adding service areas does not
+   eliminate the distance factor in local rankings.
+3. Permission-based email: Strongest with known homeowners. One useful monthly
+   message, separate seller segmentation from buyer alerts, link to consultation
+   or a relevant case study. Do not enroll every inquiry automatically.
+4. Focused local SEO: Potentially strong intent; moderate initial effort, months to
+   assess. Publish two strong local seller pages before expanding to five.
+5. Google Search Ads: Intent can be strong, economics unknown. Direct spend and
+   weekly search-term review; early signals in days/weeks. Test only after capture,
+   tracking and follow-up are verified.
+6. Broad social posting: Variable quality and potentially high time cost. Repurpose
+   existing useful work; do not make daily posting the main strategy.
+
+SPECIFIC PAGES, TOPICS AND OFFERS
+[ ] /sell -- representation, scope, consultation and service outline.
+[ ] White Salmon seller page -- local pricing/preparation/agent-selection questions.
+[ ] Hood River seller page -- selling process, marketing and preparation consultation.
+[ ] "What should I fix before listing a Gorge home?" -- short preparation checklist.
+[ ] "How to compare listing-service proposals" -- actual scope and transparent terms.
+[ ] Two local sale case studies -- challenges, preparation, marketing and verified results.
+[ ] Parkdale/Trout Lake rural-property preparation guide -- well/septic/access/acreage
+    documentation checklist, with relevant professional/official references.
+Expand to The Dalles, Parkdale and Trout Lake as distinct examples/guidance become
+available. Avoid near-identical city-name pages. Keep legal/zoning content dated
+and linked to appropriate official sources; this audit did not verify those laws.
+
+OPTIONAL PAID SEARCH EXPERIMENT -- DO NOT LAUNCH WITHOUT APPROVAL
+Proposed ceiling: $300 total over 30 days, after tracking is verified.
+Start with tightly focused seller terms for White Salmon and Hood River; use the
+relevant seller landing page. Exclude clearly irrelevant rental, employment and
+buyer-search queries. Review actual search terms.
+Success: Genuine qualified seller inquiries and booked consultations, not clicks
+or newsletter subscriptions. Review at $150; pause if there are no genuine seller
+inquiries and diagnose queries, landing page and tracking. Stop at $300 unless
+an extension is deliberately approved. Small/inconclusive samples do not prove
+that the channel cannot work. No search volumes, conversion rates or traffic
+forecasts have been assumed.
+Use housing-appropriate targeting; Google restricts demographic and ZIP targeting
+for housing advertising. Do not launch campaigns or spend money as part of this plan.
+
+MEASUREMENT AND FOLLOW-UP
+Funnel: Inquiry received -> Qualified seller -> Consultation booked -> Consultation
+completed -> Listing signed.
+Qualified seller: Owner/authorized decision-maker with a property in the service
+area and plausible selling intention; an email open alone is not qualification.
+
+[ ] Store inquiry ID, source, landing page, first/last campaign attribution, received
+    time, stage, next action and outcome. Capture click IDs only as appropriate to
+    consent setup. Keep names/emails/phones/property addresses out of analytics payloads.
+[ ] Fire inquiry conversion only after server accepts and saves it.
+[ ] Deduplicate submission IDs and normalized contact matching.
+[ ] Classify spam, duplicates, buyers, vendors and tests separately.
+[ ] Treat phone clicks and booking-link clicks as intermediate events, not appointments.
+[ ] Record actual bookings, completed consultations and signed listings separately.
+[ ] Exclude Admin activity and sensitive unsubscribe URLs from public analytics.
+[ ] Automate receipt confirmation, notification retries and unhandled-inquiry reminders.
+[ ] Conduct one weekly review of qualified inquiries, consultations and signed listings.
+[ ] Obtain Analytics/Search Console/Ads/Business Profile reports to establish a baseline.
+Do not interpret the current housing-alert Admin dashboard as a complete seller CRM.
+
+30/60/90-DAY PLAN
+DAYS 1-30 -- WEBSITE/SYSTEMS
+- Confirm services, fees and phone; repair contact workflow and notification sender.
+- Persist inquiries and track outcomes; publish /sell and update homepage/mobile hero.
+- Optimize portrait; remove misleading metadata claims.
+DAYS 1-30 -- ACQUISITION
+- Verify Business Profile; reconcile contact details.
+- Establish Search Console/Analytics baseline.
+- Ask past clients for genuine reviews and relevant introductions.
+
+DAYS 31-60 -- WEBSITE/SYSTEMS
+- Publish two case studies and White Salmon/Hood River seller pages.
+- Repair listing titles/canonicals/status schema/not-found responses.
+- Improve sitemap and keyboard navigation.
+DAYS 31-60 -- ACQUISITION
+- One useful permission-based homeowner email.
+- A few relevant local referral relationships.
+- Optional capped Search Ads test once conversion path is ready.
+
+DAYS 61-90 -- WEBSITE/SYSTEMS
+- Review actual inquiries/objections and improve form/offer based on evidence.
+- Add another local page only where justified; simplify recurring reporting.
+DAYS 61-90 -- ACQUISITION
+- Continue sources yielding qualified conversations; pause weak paid terms.
+- Repurpose one monthly update across email, Business Profile and site.
+Sustainable rhythm: One short weekly pipeline review and one monthly content/marketing
+session, rather than new articles for every town every week.
+
+FIRST THREE IMPLEMENTATION TASKS
+TASK 1 -- REPAIR CONTACT-TO-INQUIRY WORKFLOW
+Files: frontend/src/pages/Contact.js; backend-server/server.js; selected inquiry
+storage/API/Admin reporting files and corresponding isolated tests.
+Acceptance criteria:
+- Displayed and dialed phone numbers match the confirmed number.
+- Valid inquiries persist before notification; notification failure cannot lose them.
+- Retries/duplicate submissions do not create duplicate inquiries/conversions.
+- Sender authentication, field validation and spam controls work.
+- One conversion event per accepted inquiry, with no PII in analytics.
+- Automated tests send no real email and perform no production writes.
+
+TASK 2 -- SELLER LANDING PAGE AND HOMEPAGE PATH
+Files: frontend/src/pages/Home.js; frontend/src/pages/Home.css;
+frontend/src/components/Header.js; frontend/src/App.js; new seller page/styles.
+Acceptance criteria:
+- Homeowner can identify service area, offer, proof and next step immediately.
+- Primary seller CTA visible at tested mobile size.
+- Seller form records intent and explains next steps.
+- Every fee/service claim matches the approved current offer.
+
+TASK 3 -- ENTRY-PAGE PERFORMANCE AND SEO IDENTITY
+Files: frontend/public/index.html; frontend/src/pages/PropertyDetails.js;
+frontend/src/pages/Listings.js; backend-server/generate-sitemap.js; image assets;
+production hosting configuration (requires separate review/access).
+Acceptance criteria:
+- Portrait appropriately sized/compressed and text compression verified.
+- Key pages have accurate titles/descriptions/canonicals.
+- Property metadata does not leak to other routes; alternate slugs consolidate.
+- Sold schema matches status; unknown documents return genuine not-found responses.
+- Important links are keyboard accessible and crawlable.
+
+Tasks 1 and 2 precede meaningful paid traffic. Broad redesign, a framework rewrite,
+and constant blogging are not prerequisites.
+
+REFERENCE GUIDANCE
+Google JavaScript SEO:
+https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics
+Google local ranking:
+https://support.google.com/business/answer/7091?hl=en-en
+Google housing advertising policy:
+https://support.google.com/adspolicy/answer/16701755?hl=en
+Google Core Web Vitals:
+https://developers.google.com/search/docs/appearance/core-web-vitals

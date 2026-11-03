@@ -150,3 +150,39 @@ test('expanding a client shows distinct opened emails in the selected period', a
   fireEvent.click(screen.getByRole('button', { name: 'Hide opened emails' }));
   expect(screen.queryByText('2 Fictional Test Lane')).not.toBeInTheDocument();
 });
+
+test('client searches expose explicit activation with a session CSRF token', async () => {
+  authenticated = true;
+  const original = global.fetch.getMockImplementation();
+  global.fetch.mockImplementation((url, options = {}) => {
+    if (url.endsWith('/searches/1/state')) return response({ id: 1, is_active: true });
+    if (url.includes('/clients/1/searches?')) return response(page([{ id: 1, frequency: 'instant', is_active: false, editable: true, criteria: { cities: ['White Salmon'] } }]));
+    return original(url, options);
+  });
+  mount('/admin/clients/1');
+  fireEvent.click(await screen.findByRole('button', { name: 'Activate search' }));
+  await waitFor(() => expect(global.fetch.mock.calls.some(([url]) => url.endsWith('/searches/1/state'))).toBe(true));
+  const [, options] = global.fetch.mock.calls.find(([url]) => url.endsWith('/searches/1/state'));
+  expect(options.method).toBe('PATCH');
+  expect(options.headers['X-CSRF-Token']).toBe('synthetic-csrf');
+  expect(JSON.parse(options.body)).toEqual({ is_active: true });
+  await screen.findByRole('heading', { name: 'Saved searches' });
+});
+
+test('Add client in the directory opens the created client profile', async () => {
+  authenticated = true;
+  const original = global.fetch.getMockImplementation();
+  global.fetch.mockImplementation((url, options = {}) => {
+    if (url.endsWith('/clients') && options.method === 'POST') return response({ id: 1 }, 201);
+    return original(url, options);
+  });
+  mount('/admin/clients');
+  fireEvent.click(await screen.findByRole('button', { name: 'Add client' }));
+  fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Fictional Buyer' } });
+  fireEvent.change(screen.getByLabelText('Email address'), { target: { value: 'fictional.buyer@example.com' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Create client' }));
+  expect(await screen.findByRole('heading', { name: 'Saved searches' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'New listing search' })).toBeInTheDocument();
+  await screen.findByRole('link', { name: 'View activity →' });
+  await screen.findByText(/White Salmon.*3\+ beds/);
+});

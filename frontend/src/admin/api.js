@@ -16,6 +16,13 @@ export async function adminRequest(path, options = {}) {
     const error = new Error(response.status === 429 ? 'Too many sign-in attempts. Please try again in ten minutes.'
       : response.status === 503 ? 'This service is temporarily unavailable. Please try again later.'
         : response.status === 404 ? 'This record could not be found.' : 'Unable to complete this request. Please try again.');
+    if ([409, 422].includes(response.status)) {
+      try {
+        const body = await response.json();
+        error.message = response.status === 409 && typeof body.detail === 'string' ? body.detail : 'Check your filters: use nonnegative numbers and keep minimums below maximums.';
+      } catch { /* Keep the generic message for malformed responses. */ }
+    }
+    if (response.status === 403) error.message = 'Changes are unavailable in read-only preview, or your request could not be verified. Refresh and try again.';
     error.status = response.status;
     throw error;
   }

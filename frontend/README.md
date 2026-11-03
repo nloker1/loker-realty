@@ -111,3 +111,18 @@ period across all pages. Listing-link clicks are labeled separately from other
 email links. "All clients" opens the complete searchable directory, including
 clients without recent activity. Activity uses verified event history; legacy
 tracking counters alone do not create dashboard entries.
+
+### Saved-search editor
+
+In `/admin/clients`, select a client and open **New listing search** or **Edit
+criteria**. Preview matching homes, save paused, then explicitly activate. Saving
+edited criteria pauses the search for review. Unsupported existing search settings
+are preserved and excluded from editing. Global unsubscribe preferences are never
+cleared by the editor. Live production preview allows filter previews but disables
+saving and activation; use the fictional admin demo database for the complete flow.
+Restart the backend after updating routes. No migration is required.
+
+The client directory also includes **Add client** (name and email). Creating a
+client opens their profile, sends no email and creates no alert. Duplicate emails
+are rejected without changing the existing client. Live-data preview disables
+creation; use the fictional admin demo to test saving.

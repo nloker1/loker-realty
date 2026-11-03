@@ -1,7 +1,9 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { Link, NavLink, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
+import { Link, NavLink, Route, Routes, useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { adminRequest, criteriaSummary, dateTime, friendlyTime, safeLink, statusLabel } from './api';
 import './AdminActivity.css';
+import SavedSearchEditor from './SavedSearchEditor';
+import AddClient from './AddClient';
 
 const Session = createContext();
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -155,6 +157,9 @@ function ActivityDashboard() {
 }
 
 function Clients() {
+  const { session, expired } = useContext(Session);
+  const navigate = useNavigate();
+  const [adding, setAdding] = useState(false);
   const [params, setParams] = useSearchParams();
   const q = params.get('q') || '';
   const page = Math.max(1, Number(params.get('page')) || 1);
@@ -162,8 +167,13 @@ function Clients() {
   useEffect(() => setSearch(q), [q]);
   const resource = useResource(`/clients?q=${encodeURIComponent(q)}&page=${page}`);
   return <>
-    <Title eyebrow="Your relationships" title="Clients"><button onClick={resource.refresh}>Refresh activity</button></Title>
+    <Title eyebrow="Your relationships" title="Clients"><div className="admin-editor-actions">
+      <button onClick={() => setAdding(true)}>Add client</button><button onClick={resource.refresh}>Refresh activity</button>
+    </div></Title>
     <p className="admin-description">Saved searches, delivery history, and the activity behind every email.</p>
+    {adding && <AddClient csrfToken={session.csrf_token} readOnly={session.data_mode === 'production_readonly'}
+      onExpired={expired} onCancel={() => setAdding(false)} onCreated={client => navigate(`/admin/clients/${client.id}`)} />}
+
     <section className="admin-panel">
       <div className="admin-panel-bar"><div><h2>Client directory</h2><p>{resource.data ? `${resource.data.total} clients` : 'Your client list'}</p></div>
         <form className="admin-search" onSubmit={e => { e.preventDefault(); setParams(search ? { q: search } : {}); }}>
@@ -180,21 +190,48 @@ function Clients() {
         <td><ActivityTime value={client.last_email_at} /></td>
         <td><span>{client.recorded_open_count} opens · {client.recorded_click_count} clicks</span><span className="admin-cell-secondary">Last open: <ActivityTime value={client.last_recorded_open_at} /></span></td>
         <td><Link className="admin-text-link" to={`/admin/clients/${client.id}`}>View →</Link></td>
-      </tr>)}</tbody></table></div> : <div className="admin-empty"><h3>{q ? 'No matching clients' : 'No clients yet'}</h3><p>{q ? 'Try another name or email address.' : 'Clients will appear here after a search is saved.'}</p></div>)}
+      </tr>)}</tbody></table></div> : <div className="admin-empty"><h3>{q ? 'No matching clients' : 'No clients yet'}</h3><p>{q ? 'Try another name or email address.' : 'Use Add client to create your first client.'}</p></div>)}
       <Pagination data={resource.data} setPage={value => setParams({ ...(q ? { q } : {}), page: String(value) })} />
     </section>
   </>;
 }
 
-function SearchList({ clientId, unsubscribed }) {
+function SearchList({ clientId, unsubscribed, onChanged }) {
+  const { session, expired } = useContext(Session);
+  const readOnly = session.data_mode === 'production_readonly';
+  const [editing, setEditing] = useState(null);
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
   const [page, setPage] = useState(1);
   const resource = useResource(`/clients/${clientId}/searches?page=${page}`);
-  return <section className="admin-panel"><div className="admin-panel-bar"><h2>Saved searches</h2></div><Notice resource={resource} />
+  async function toggle(search) {
+    setBusy(true); setError('');
+    try {
+      await adminRequest(`/clients/${clientId}/searches/${search.id}/state`, {
+        method: 'PATCH', headers: { 'X-CSRF-Token': session.csrf_token }, body: JSON.stringify({ is_active: !search.is_active }),
+      });
+      resource.refresh(); onChanged();
+    } catch (failure) { if (failure.status === 401) expired(); else setError(failure.message); }
+    finally { setBusy(false); }
+  }
+  return <section className="admin-panel"><div className="admin-panel-bar"><h2>Saved searches</h2>
+    <button onClick={() => setEditing({})}>New listing search</button></div><Notice resource={resource} />
+    {error && <p className="admin-error" role="alert">{error}</p>}
+    {editing && <SavedSearchEditor key={editing.id || 'new'} clientId={clientId} search={editing.id ? editing : null}
+      csrfToken={session.csrf_token} readOnly={readOnly} onExpired={expired} onClose={() => setEditing(null)}
+      onSaved={() => { setEditing(null); resource.refresh(); onChanged(); }} />}
     {resource.data && (resource.data.items.length ? <ul className="admin-search-list">{resource.data.items.map(search => <li key={search.id}>
       <div><strong>{search.criteria.alert_type === 'property' ? 'Property watch' : search.criteria.alert_type === 'market' ? 'Weekly market update' : 'Listing search'}</strong>
-        <p>{criteriaSummary(search.criteria)}</p><span className="admin-muted">{search.criteria.alert_type === 'market' ? 'Weekly' : search.frequency === 'daily' ? 'Daily setting' : 'Instant setting'} · Last alert: {dateTime(search.last_alert_sent)}</span></div>
+        <p>{criteriaSummary(search.criteria)}</p><span className="admin-muted">{search.criteria.alert_type === 'market' ? 'Weekly' : search.frequency === 'daily' ? 'Daily setting' : 'Instant setting'} · Last alert: {dateTime(search.last_alert_sent)}</span>
+        {search.editable === false && <p className="admin-muted">This search has settings the listing editor does not support. Its criteria are preserved.</p>}
+        <div className="admin-editor-actions">
+          {search.editable && <button onClick={() => setEditing(search)}>{readOnly ? 'Preview criteria' : 'Edit criteria'}</button>}
+          <button disabled={busy || readOnly || (!search.is_active && (unsubscribed || !search.editable))} onClick={() => toggle(search)}>{search.is_active ? 'Pause search' : 'Activate search'}</button>
+        </div>
+      </div>
       <Badge value={search.is_active && !unsubscribed ? 'active' : 'neutral'}>{unsubscribed ? 'Unsubscribed' : search.is_active ? 'Active' : 'Paused'}</Badge>
     </li>)}</ul> : <div className="admin-empty">No saved searches.</div>)}
+    {unsubscribed && <p className="admin-note">This client is unsubscribed. Editing searches will not resubscribe them.</p>}
     <Pagination data={resource.data} setPage={setPage} />
   </section>;
 }
@@ -224,7 +261,7 @@ function ClientDetail() {
     <Title eyebrow="Client overview" title={client.name || client.email || 'Unnamed client'}><button onClick={resource.refresh}>Refresh overview</button></Title>
     <div className="admin-client-meta"><span>{client.email || 'No email address'}</span><Badge value={client.is_unsubscribed ? 'neutral' : 'active'}>{client.is_unsubscribed ? 'Unsubscribed' : 'Subscribed'}</Badge><span>Joined {dateTime(client.created_at)}</span></div>
     <Metrics client={client} />
-    <SearchList key={`search-${clientId}`} clientId={clientId} unsubscribed={client.is_unsubscribed} />
+    <SearchList key={`search-${clientId}`} clientId={clientId} unsubscribed={client.is_unsubscribed} onChanged={resource.refresh} />
     <EmailList key={`email-${clientId}`} clientId={clientId} />
   </>;
 }
@@ -292,7 +329,7 @@ export default function AdminActivity() {
         <NavLink className="admin-nav-link" end to="/admin">◉ <span>Activity</span></NavLink>
         <NavLink className="admin-nav-link" to="/admin/clients">◎ <span>All clients</span></NavLink>
       </nav>
-      <div className="admin-sidebar-bottom"><Link to="/">↗ Public website</Link><span>Read-only administration</span></div>
+      <div className="admin-sidebar-bottom"><Link to="/">↗ Public website</Link><span>Client administration</span></div>
     </aside>
     <div className="admin-main"><div className="admin-topbar"><span>Client activity</span><div><span>{session.username}</span><button disabled={signingOut} onClick={signOut}>{signingOut ? 'Signing out…' : 'Sign out'}</button></div></div>
       <main className="admin-content">{message && <p role="alert" className="admin-error">{message}</p>}
